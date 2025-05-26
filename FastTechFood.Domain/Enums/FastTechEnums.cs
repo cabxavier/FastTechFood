@@ -1,6 +1,6 @@
 ﻿namespace FastTechFood.Domain.Enums
 {
-    public enum UserType { Customer, Employee, KitchenStaff, Managers }
+    public enum UserType { Customer, Employee, KitchenStaff, Manager }
 
     public enum ProductType { Sandwich, Dessert, Drink, Combok }
 

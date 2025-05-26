@@ -17,19 +17,19 @@ namespace FastTechFood.Domain.Entities
             this.Name = name;
             this.Description = description;
             this.Price = price;
-            this.ProductType = productType;
             this.IsActive = true;
+            this.ProductType = productType;
 
             this.Validate();
         }
 
-        public Product(string name, string description, decimal price, ProductType productType, bool isActive)
+        public void Update(string name, string description, decimal price, bool isActive, ProductType productType)
         {
             this.Name = name;
             this.Description = description;
             this.Price = price;
-            this.ProductType = productType;
             this.IsActive = isActive;
+            this.ProductType = productType;
 
             this.Validate();
         }

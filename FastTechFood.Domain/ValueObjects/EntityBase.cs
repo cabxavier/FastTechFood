@@ -25,7 +25,7 @@ namespace FastTechFood.Domain.ValueObjects
             return this.Id == other.Id;
         }
 
-        public static bool operator ==(EntityBase a, EntityBase b)
+        public static bool operator ==(EntityBase? a, EntityBase? b)
         {
             if (a is null && b is null) return true;
 
@@ -34,7 +34,7 @@ namespace FastTechFood.Domain.ValueObjects
             return a.Equals(b);
         }
 
-        public static bool operator !=(EntityBase a, EntityBase b)
+        public static bool operator !=(EntityBase? a, EntityBase? b)
         {
             return !(a == b);
         }
