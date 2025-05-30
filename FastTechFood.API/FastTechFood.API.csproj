@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FastTechFood.Application\FastTechFood.Application.csproj" />
     <ProjectReference Include="..\FastTechFood.Infrastructure\FastTechFood.Infrastructure.csproj" />
   </ItemGroup>

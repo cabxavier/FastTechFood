@@ -6,7 +6,7 @@ namespace FastTechFood.Infrastructure.Context
 {
     public class MongoDbContext
     {
-        private readonly IMongoDatabase mongoDatabase;
+        public IMongoDatabase mongoDatabase;
 
         public MongoDbContext(IConfiguration configuration)
         {

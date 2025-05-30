@@ -17,12 +17,17 @@ namespace FastTechFood.Infrastructure.Repositories
 
         public async Task AddAsync(Order order)
         {
+            foreach (var item in order.Items)
+            {
+                item.ProductName = (await this.mongoDbContext.Products.Find(x => x.Id == item.ProductId).FirstOrDefaultAsync()).Name;
+            }
+
             await this.mongoDbContext.Orders.InsertOneAsync(order);
         }
 
         public async Task<IEnumerable<Order>> GetAllPendingAsync()
         {
-            return await this.mongoDbContext.Orders.Find(x => x.Status == OrderStatus.Pending).ToListAsync();
+            return await this.mongoDbContext.Orders.Find(x => x.OrderStatus == OrderStatus.Pending).ToListAsync();
         }
 
         public async Task<Order> GetByIdAsync(Guid id)

@@ -1,20 +1,22 @@
-﻿using FastTechFood.Domain.Entities;
-using FastTechFood.Domain.Enums;
-using FastTechFood.Infrastructure.Configurations;
-using Microsoft.IdentityModel.Tokens;
+﻿using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using FastTechFood.Domain.Entities;
+using FastTechFood.Domain.Enums;
+using FastTechFood.Infrastructure.Configurations;
+using FastTechFood.Infrastructure.Interfaces;
 
 namespace FastTechFood.Infrastructure.Services
 {
-    public class JwtTokenService
+    public class JwtTokenService : IJwtTokenService
     {
         private readonly JwtSettings jwtSettings;
 
-        public JwtTokenService(JwtSettings jwtSettings)
+        public JwtTokenService(IOptions<JwtSettings> jwtSettings)
         {
-            this.jwtSettings = jwtSettings;
+            this.jwtSettings = jwtSettings.Value;
         }
 
         public string GenerateToken(User user)
@@ -26,10 +28,10 @@ namespace FastTechFood.Infrastructure.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Role, user.UserType.ToString()),
-                new Claim("UserType",user.UserType.ToString())
+                new Claim("UserType", user.UserType.ToString())
             };
 
             if (user.UserType == UserType.Customer && !string.IsNullOrEmpty(user.CPF))

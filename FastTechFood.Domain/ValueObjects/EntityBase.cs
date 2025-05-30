@@ -7,7 +7,7 @@ namespace FastTechFood.Domain.ValueObjects
     {
         [BsonId]
         [BsonRepresentation(BsonType.String)]
-        public Guid Id { get; protected set; }
+        public Guid Id { get; set; }
 
         protected EntityBase()
         {

@@ -6,7 +6,7 @@ namespace FastTechFood.Domain.Entities
     public class OrderItem : EntityBase
     {
         public Guid ProductId { get; private set; }
-        public string ProductName { get; private set; }
+        public string ProductName { get; set; }
         public decimal UnitPrice { get; private set; }
         public int Quantity { get; private set; }
         public decimal Total => this.UnitPrice * this.Quantity;
@@ -31,6 +31,8 @@ namespace FastTechFood.Domain.Entities
         private void Validate()
         {
             if (this.ProductId == Guid.Empty) throw new DomainException("Produto é obrigatório");
+
+            if (string.IsNullOrWhiteSpace(this.ProductName)) throw new DomainException("Descrição do produto é obrigatório");
 
             if (this.Quantity <= 0) throw new DomainException("Quantidade deve ser maior que zero");
 

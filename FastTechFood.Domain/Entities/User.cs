@@ -10,8 +10,9 @@ namespace FastTechFood.Domain.Entities
         public string Email { get; private set; }
         public string Password { get; set; }
         public UserType UserType { get; private set; }
-        public string? CPF { get; private set; }
+        public string CPF { get; private set; }
 
+        public User() { }
 
         public User(string name, string email, string password, UserType userType)
         {

@@ -38,7 +38,7 @@ namespace FastTechFood.Application.Services
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao registrar produto: {Name}", produtoDTO.Name);
+                this.logger.LogError(ex, "Erro ao registrar o produto: {Name}", produtoDTO.Name);
 
                 throw new DomainException(ex.Message);
             }
@@ -121,7 +121,7 @@ namespace FastTechFood.Application.Services
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao atualizar produto: {Id}", id);
+                this.logger.LogError(ex, "Erro ao atualizar o produto: {Id}", id);
 
                 throw new DomainException(ex.Message);
             }

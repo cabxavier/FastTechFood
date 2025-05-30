@@ -4,7 +4,7 @@ using FastTechFood.Domain.Entities;
 using FastTechFood.Domain.Enums;
 using FastTechFood.Domain.Exceptions;
 using FastTechFood.Domain.Interfaces;
-using FastTechFood.Infrastructure.Services;
+using FastTechFood.Infrastructure.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace FastTechFood.Application.Services
@@ -12,28 +12,44 @@ namespace FastTechFood.Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
-        private readonly JwtTokenService jwtTokenService;
+        private readonly IJwtTokenService jwtTokenService;
         private readonly ILogger<UserService> logger;
+        private readonly IValidationService validationService;
 
-        public UserService(IUserRepository userRepository, JwtTokenService jwtTokenService, ILogger<UserService> logger)
+        public UserService(IUserRepository userRepository, IJwtTokenService jwtTokenService, ILogger<UserService> logger, IValidationService validationService)
         {
             this.userRepository = userRepository;
             this.jwtTokenService = jwtTokenService;
             this.logger = logger;
+            this.validationService = validationService;
         }
 
         public async Task RegisterCustomerAsync(RegisterCustomerDTO registerCustomerDTO)
         {
             this.logger.LogInformation("Iniciando registro de novo cliente: {Email}", registerCustomerDTO.Email);
 
-            if (await EmailExistsAsync(registerCustomerDTO.Email))
+            if (!this.validationService.ValidateEmail(registerCustomerDTO.Email))
+            {
+                this.logger.LogWarning("E-mail inválido: {Email}", registerCustomerDTO.Email);
+
+                throw new DomainException("E-mail inválido");
+            }
+
+            if (!this.validationService.ValidateCPF(registerCustomerDTO.CPF))
+            {
+                this.logger.LogWarning("CPF inválido: {CPF}", registerCustomerDTO.CPF);
+
+                throw new DomainException("CPF inválido");
+            }
+
+            if (await this.EmailExistsAsync(registerCustomerDTO.Email))
             {
                 this.logger.LogWarning("Tentativa de registro com e-mail já existente: {Email}", registerCustomerDTO.Email);
 
                 throw new DomainException("E-mail já cadastrado");
             }
 
-            if (await CpfExistsAsync(registerCustomerDTO.CPF))
+            if (await this.CpfExistsAsync(registerCustomerDTO.CPF))
             {
                 this.logger.LogWarning("Tentativa de registro com CPF já existente: {CPF}", registerCustomerDTO.CPF);
 
@@ -55,8 +71,7 @@ namespace FastTechFood.Application.Services
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao registrar cliente: {Email}", registerCustomerDTO.Email);
-
+                this.logger.LogError(ex, "Erro ao registrar o cliente: {Email}", registerCustomerDTO.Email);
                 throw new DomainException(ex.Message);
             }
         }
@@ -64,6 +79,20 @@ namespace FastTechFood.Application.Services
         public async Task RegisterEmployeeAsync(RegisterEmployeeDTO registerEmployeeDTO)
         {
             this.logger.LogInformation("Iniciando registro de novo funcionário: {Email}", registerEmployeeDTO.Email);
+
+            if (!this.validationService.ValidateEmail(registerEmployeeDTO.Email))
+            {
+                this.logger.LogWarning("E-mail inválido: {Email}", registerEmployeeDTO.Email);
+
+                throw new DomainException("E-mail inválido");
+            }
+
+            if (!this.validationService.ValidateCPF(registerEmployeeDTO.CPF))
+            {
+                this.logger.LogWarning("CPF inválido: {CPF}", registerEmployeeDTO.CPF);
+
+                throw new DomainException("CPF inválido");
+            }
 
             if (await EmailExistsAsync(registerEmployeeDTO.Email))
             {
@@ -85,7 +114,8 @@ namespace FastTechFood.Application.Services
                     registerEmployeeDTO.Name,
                     registerEmployeeDTO.Email,
                     BCrypt.Net.BCrypt.HashPassword(registerEmployeeDTO.Password),
-                    userType);
+                    userType,
+                    registerEmployeeDTO.CPF);
 
                 await this.userRepository.AddAsync(user);
 
@@ -93,8 +123,7 @@ namespace FastTechFood.Application.Services
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao registrar funcionário: {Email}", registerEmployeeDTO.Email);
-
+                this.logger.LogError(ex, "Erro ao registrar o funcionário: {Email}", registerEmployeeDTO.Email);
                 throw new DomainException(ex.Message);
             }
         }
@@ -124,7 +153,7 @@ namespace FastTechFood.Application.Services
             {
                 this.logger.LogError(ex, "Erro ao gerar token JWT para o usuário: {UserId}", user?.Id);
 
-                throw new DomainException("Erro ao processar login");
+                throw new DomainException("Erro ao processar o login");
             }
         }
 
@@ -133,6 +162,11 @@ namespace FastTechFood.Application.Services
             this.logger.LogInformation("Buscando usuário por Id: {UserId}", id);
 
             var user = await this.userRepository.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                return null;
+            }
 
             var userDTO = new UserDTO
             (
@@ -164,7 +198,7 @@ namespace FastTechFood.Application.Services
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao atualizar usuário: {UserId}", user.Id);
+                this.logger.LogError(ex, "Erro ao atualizar o usuário: {UserId}", user.Id);
 
                 throw new DomainException(ex.Message);
             }
