@@ -82,11 +82,9 @@ namespace FastTechFood.Application.Tests.Services
                 "12345678909"
             );
 
-            var existingUser = new User("Existing User", registerDto.Email, "hashed", UserType.Customer, registerDto.CPF);
-
             this.validationServiceMock.Setup(x => x.ValidateEmail(registerDto.Email)).Returns(true);
             this.validationServiceMock.Setup(x => x.ValidateCPF(registerDto.CPF)).Returns(true);
-            this.userRepositoryMock.Setup(x => x.GetByEmailAsync(registerDto.Email)).ReturnsAsync(existingUser);
+            this.userRepositoryMock.Setup(x => x.GetByEmailAsync(registerDto.Email)).ReturnsAsync(new User("Existing User", registerDto.Email, "hashed", UserType.Customer, registerDto.CPF));
 
             await Assert.ThrowsAsync<DomainException>(() => this.userService.RegisterCustomerAsync(registerDto));
         }
@@ -131,8 +129,7 @@ namespace FastTechFood.Application.Tests.Services
                 "correctPassword"
             );
 
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(loginDto.Password);
-            var user = new User("Test User", loginDto.Email, hashedPassword, UserType.Customer, "12345678909");
+            var user = new User("Test User", loginDto.Email, BCrypt.Net.BCrypt.HashPassword(loginDto.Password), UserType.Customer, "12345678909");
 
             this.userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDto.Email)).ReturnsAsync(user);
             this.jwtTokenServiceMock.Setup(x => x.GenerateToken(user)).Returns("generated-token");
@@ -149,10 +146,7 @@ namespace FastTechFood.Application.Tests.Services
                 "wrongPassword"
             );
 
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword("correctPassword");
-            var user = new User("Test User", loginDto.Email, hashedPassword, UserType.Customer, "12345678909");
-
-            this.userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDto.Email)).ReturnsAsync(user);
+            this.userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDto.Email)).ReturnsAsync(new User("Test User", loginDto.Email, BCrypt.Net.BCrypt.HashPassword("correctPassword"), UserType.Customer, "12345678909"));
 
             await Assert.ThrowsAsync<DomainException>(() => this.userService.LoginAsync(loginDto));
         }
@@ -191,6 +185,7 @@ namespace FastTechFood.Application.Tests.Services
         public async Task GetUserByIdAsync_WithNonExistentUser_ShouldReturnNull()
         {
             var userId = Guid.NewGuid();
+
             this.userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync((User)null);
 
             Assert.Null(await this.userService.GetUserByIdAsync(userId));
@@ -200,10 +195,9 @@ namespace FastTechFood.Application.Tests.Services
         public async Task UpdateUserAsync_WithExistingUser_ShouldUpdateSuccessfully()
         {
             var userId = Guid.NewGuid();
-            var existingUser = new User("Old Name", "old@example.com", "hashed", UserType.Customer, "12345678909") { Id = userId };
             var updatedUser = new User("New Name", "new@example.com", "newHashed", UserType.Customer, "12345678909") { Id = userId };
 
-            this.userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(existingUser);
+            this.userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(new User("Old Name", "old@example.com", "hashed", UserType.Customer, "12345678909") { Id = userId });
             this.userRepositoryMock.Setup(x => x.UpdateAsync(updatedUser)).Returns(Task.CompletedTask);
 
             await this.userService.UpdateUserAsync(updatedUser);
@@ -215,30 +209,27 @@ namespace FastTechFood.Application.Tests.Services
         public async Task UpdateUserAsync_WithNonExistentUser_ShouldThrowDomainException()
         {
             var userId = Guid.NewGuid();
-            var user = new User("Test", "test@example.com", "hashed", UserType.Customer, "12345678909") { Id = userId };
 
             this.userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync((User)null);
 
-            await Assert.ThrowsAsync<DomainException>(() => this.userService.UpdateUserAsync(user));
+            await Assert.ThrowsAsync<DomainException>(() => this.userService.UpdateUserAsync(new User("Test", "test@example.com", "hashed", UserType.Customer, "12345678909") { Id = userId }));
         }
 
         [Fact]
         public async Task EmailExistsAsync_WithExistingEmail_ShouldReturnTrue()
         {
             var email = "existing@example.com";
-            var user = new User("Test", email, "hashed", UserType.Customer, "12345678909");
 
-            this.userRepositoryMock.Setup(x => x.GetByEmailAsync(email)).ReturnsAsync(user);
+            this.userRepositoryMock.Setup(x => x.GetByEmailAsync(email)).ReturnsAsync(new User("Test", email, "hashed", UserType.Customer, "12345678909"));
 
-            var result = await this.userService.EmailExistsAsync(email);
-
-            Assert.True(result);
+            Assert.True(await this.userService.EmailExistsAsync(email));
         }
 
         [Fact]
         public async Task EmailExistsAsync_WithNonExistingEmail_ShouldReturnFalse()
         {
             var email = "nonexisting@example.com";
+
             this.userRepositoryMock.Setup(x => x.GetByEmailAsync(email)).ReturnsAsync((User)null);
 
             Assert.False(await this.userService.EmailExistsAsync(email));
@@ -258,6 +249,7 @@ namespace FastTechFood.Application.Tests.Services
         public async Task CpfExistsAsync_WithNonExistingCpf_ShouldReturnFalse()
         {
             var cpf = "98765432109";
+
             this.userRepositoryMock.Setup(x => x.GetByCpfAsync(cpf)).ReturnsAsync((User)null);
 
             Assert.False(await this.userService.CpfExistsAsync(cpf));
@@ -269,11 +261,10 @@ namespace FastTechFood.Application.Tests.Services
             var userId = Guid.NewGuid();
             var currentPassword = "currentPassword";
             var newPassword = "newPassword";
-            var hashedCurrentPassword = BCrypt.Net.BCrypt.HashPassword(currentPassword);
 
             User updatedUser = null;
 
-            this.userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(new User("Test", "test@example.com", hashedCurrentPassword, UserType.Customer, "12345678909") { Id = userId });
+            this.userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(new User("Test", "test@example.com", BCrypt.Net.BCrypt.HashPassword(currentPassword), UserType.Customer, "12345678909") { Id = userId });
             this.userRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<User>()))
                 .Callback<User>(u => updatedUser = u)
                 .Returns(Task.CompletedTask);
@@ -291,14 +282,11 @@ namespace FastTechFood.Application.Tests.Services
         public async Task ChangePasswordAsync_WithInvalidCurrentPassword_ShouldThrowDomainException()
         {
             var userId = Guid.NewGuid();
-            var currentPassword = "wrongPassword";
-            var newPassword = "newPassword";
-            var hashedCurrentPassword = BCrypt.Net.BCrypt.HashPassword("correctPassword");
 
-            this.userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(new User("Test", "test@example.com", hashedCurrentPassword, UserType.Customer, "12345678909") { Id = userId });
+            this.userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(new User("Test", "test@example.com", BCrypt.Net.BCrypt.HashPassword("correctPassword"), UserType.Customer, "12345678909") { Id = userId });
 
             await Assert.ThrowsAsync<DomainException>(() =>
-                this.userService.ChangePasswordAsync(userId, currentPassword, newPassword));
+                this.userService.ChangePasswordAsync(userId, "wrongPassword", "newPassword"));
         }
 
         [Fact]

@@ -31,8 +31,7 @@ namespace FastTechFood.API.Tests.Controllers
             this.userServiceMock.Setup(x => x.RegisterCustomerAsync(registerDto))
                 .Returns(Task.CompletedTask);
 
-            var okResult = Assert.IsType<OkObjectResult>(await this.authController.RegisterCustomer(registerDto));
-            Assert.Equal("Cliente registrado com sucesso", okResult.Value);
+            Assert.Equal("Cliente registrado com sucesso", Assert.IsType<OkObjectResult>(await this.authController.RegisterCustomer(registerDto)).Value);
         }
 
         [Fact]
@@ -49,8 +48,7 @@ namespace FastTechFood.API.Tests.Controllers
             this.userServiceMock.Setup(x => x.RegisterCustomerAsync(registerDto))
                 .ThrowsAsync(new Exception("E-mail inválido"));
 
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(await this.authController.RegisterCustomer(registerDto));
-            Assert.Equal("E-mail inválido", badRequestResult.Value);
+            Assert.Equal("E-mail inválido", Assert.IsType<BadRequestObjectResult>(await this.authController.RegisterCustomer(registerDto)).Value);
         }
 
         [Fact]
@@ -68,8 +66,7 @@ namespace FastTechFood.API.Tests.Controllers
             this.userServiceMock.Setup(x => x.RegisterEmployeeAsync(registerDto))
                 .Returns(Task.CompletedTask);
 
-            var okResult = Assert.IsType<OkObjectResult>(await this.authController.RegisterEmployee(registerDto));
-            Assert.Equal("Funcionário registrado com sucesso", okResult.Value);
+            Assert.Equal("Funcionário registrado com sucesso", Assert.IsType<OkObjectResult>(await this.authController.RegisterEmployee(registerDto)).Value);
         }
 
         [Fact]
@@ -87,8 +84,7 @@ namespace FastTechFood.API.Tests.Controllers
             this.userServiceMock.Setup(x => x.RegisterEmployeeAsync(registerDto))
                 .ThrowsAsync(new Exception("E-mail inválido"));
 
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(await this.authController.RegisterEmployee(registerDto));
-            Assert.Equal("E-mail inválido", badRequestResult.Value);
+            Assert.Equal("E-mail inválido", Assert.IsType<BadRequestObjectResult>(await this.authController.RegisterEmployee(registerDto)).Value);
         }
 
         [Fact]
@@ -103,9 +99,7 @@ namespace FastTechFood.API.Tests.Controllers
             this.userServiceMock.Setup(x => x.LoginAsync(loginDto))
                 .ReturnsAsync("fake-jwt-token");
 
-            var okResult = Assert.IsType<OkObjectResult>(await this.authController.Login(loginDto));
-            var response = Assert.IsType<AuthDTO>(okResult.Value);
-            Assert.Equal("fake-jwt-token", response.Token);
+            Assert.Equal("fake-jwt-token", Assert.IsType<AuthDTO>(Assert.IsType<OkObjectResult>(await this.authController.Login(loginDto)).Value).Token);
         }
 
         [Fact]
@@ -120,8 +114,7 @@ namespace FastTechFood.API.Tests.Controllers
             this.userServiceMock.Setup(x => x.LoginAsync(loginDto))
                 .ThrowsAsync(new Exception("Credenciais inválidas"));
 
-            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(await this.authController.Login(loginDto));
-            Assert.Equal("Credenciais inválidas", unauthorizedResult.Value);
+            Assert.Equal("Credenciais inválidas", Assert.IsType<UnauthorizedObjectResult>(await this.authController.Login(loginDto)).Value);
         }
 
         [Fact]
@@ -136,10 +129,8 @@ namespace FastTechFood.API.Tests.Controllers
             this.userServiceMock.Setup(x => x.LoginAsync(loginDto))
                 .ThrowsAsync(new Exception("Erro no servidor"));
 
-            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(await this.authController.Login(loginDto));
-            Assert.Equal("Erro no servidor", unauthorizedResult.Value);
+            Assert.Equal("Erro no servidor", Assert.IsType<UnauthorizedObjectResult>(await this.authController.Login(loginDto)).Value);
         }
-
 
         [Fact]
         public async Task RegisterCustomer_WithNullDto_ShouldReturnBadRequest()
@@ -170,9 +161,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task Login_WithEmptyEmail_ShouldReturnBadRequest()
         {
-            var result = await this.authController.Login(new LoginDTO(string.Empty, "Password123"));
-
-            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<BadRequestObjectResult>(await this.authController.Login(new LoginDTO(string.Empty, "Password123")));
         }
     }
 }

@@ -49,10 +49,7 @@ namespace FastTechFood.API.Tests.Controllers
 
             this.SetupUserWithRole("Customer");
 
-            var result = await this.controller.Create(createOrderDto);
-
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(expectedOrderDto, okResult.Value);
+            Assert.Equal(expectedOrderDto, Assert.IsType<OkObjectResult>(await this.controller.Create(createOrderDto)).Value);
         }
 
         [Fact]
@@ -91,8 +88,7 @@ namespace FastTechFood.API.Tests.Controllers
                 HttpContext = new DefaultHttpContext() { User = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(ClaimTypes.Name, "testuser"), new Claim(ClaimTypes.Role, "KitchenStaff") }, "Test")) }
             };
 
-            var okResult = Assert.IsType<OkObjectResult>(await this.controller.GetPendingOrders());
-            Assert.Equal(pendingOrders, okResult.Value);
+            Assert.Equal(pendingOrders, Assert.IsType<OkObjectResult>(await this.controller.GetPendingOrders()).Value);
         }
 
         [Fact]
@@ -113,8 +109,7 @@ namespace FastTechFood.API.Tests.Controllers
 
             this.SetupUserWithRole("KitchenStaff");
 
-            var okResult = Assert.IsType<OkObjectResult>(await this.controller.AcceptOrder(orderId));
-            Assert.Equal("Pedido aceito com sucesso", okResult.Value);
+            Assert.Equal("Pedido aceito com sucesso", Assert.IsType<OkObjectResult>(await this.controller.AcceptOrder(orderId)).Value);
         }
 
         [Fact]
@@ -127,8 +122,7 @@ namespace FastTechFood.API.Tests.Controllers
 
             this.SetupUserWithRole("KitchenStaff");
 
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(await this.controller.AcceptOrder(orderId));
-            Assert.Equal("Pedido não encontrado", badRequestResult.Value);
+            Assert.Equal("Pedido não encontrado", Assert.IsType<BadRequestObjectResult>(await this.controller.AcceptOrder(orderId)).Value);
         }
 
         [Fact]
@@ -141,8 +135,7 @@ namespace FastTechFood.API.Tests.Controllers
 
             this.SetupUserWithRole("KitchenStaff");
 
-            var okResult = Assert.IsType<OkObjectResult>(await this.controller.RejectOrder(orderId));
-            Assert.Equal("Pedido rejeitado com sucesso", okResult.Value);
+            Assert.Equal("Pedido rejeitado com sucesso", Assert.IsType<OkObjectResult>(await this.controller.RejectOrder(orderId)).Value);
         }
 
         [Fact]
@@ -155,8 +148,7 @@ namespace FastTechFood.API.Tests.Controllers
 
             this.SetupUserWithRole("KitchenStaff");
 
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(await this.controller.RejectOrder(orderId));
-            Assert.Equal("Pedido não encontrado", badRequestResult.Value);
+            Assert.Equal("Pedido não encontrado", Assert.IsType<BadRequestObjectResult>(await this.controller.RejectOrder(orderId)).Value);
         }
 
         [Fact]
@@ -170,8 +162,7 @@ namespace FastTechFood.API.Tests.Controllers
 
             this.SetupUserWithRole("Customer");
 
-            var okResult = Assert.IsType<OkObjectResult>(await this.controller.CancelOrder(orderId, reason));
-            Assert.Equal("Pedido cancelado com sucesso", okResult.Value);
+            Assert.Equal("Pedido cancelado com sucesso", Assert.IsType<OkObjectResult>(await this.controller.CancelOrder(orderId, reason)).Value);
         }
 
         [Fact]
@@ -185,8 +176,7 @@ namespace FastTechFood.API.Tests.Controllers
 
             this.SetupUserWithRole("Customer");
 
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(await this.controller.CancelOrder(orderId, reason));
-            Assert.Equal("Pedido não encontrado", badRequestResult.Value);
+            Assert.Equal("Pedido não encontrado", Assert.IsType<BadRequestObjectResult>(await this.controller.CancelOrder(orderId, reason)).Value);
         }
 
         [Fact]
@@ -199,7 +189,7 @@ namespace FastTechFood.API.Tests.Controllers
 
         private void SetupUserWithRole(string role)
         {
-            controller.ControllerContext = new ControllerContext()
+            this.controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext()
                 {
@@ -210,7 +200,7 @@ namespace FastTechFood.API.Tests.Controllers
 
         private void SetupUserWithoutRole(string roleToExclude)
         {
-            controller.ControllerContext = new ControllerContext()
+            this.controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() { User = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(ClaimTypes.Name, "testuser") }, "TestAuth")) }
             };

@@ -104,20 +104,14 @@ namespace FastTechFood.Tests.Services
         {
             var customerId = Guid.NewGuid();
             var productId = Guid.NewGuid();
-            var createOrderDto = new CreateOrderDTO(
-                customerId,
-                DeliveryType.Delivery,
-                new List<CreateOrderItemDTO> { new CreateOrderItemDTO(productId, 1) });
-
-            var customer = new User("Cliente", "cliente@email.com", "senha", UserType.Customer);
 
             this.userRepositoryMock.Setup(x => x.GetByIdAsync(customerId))
-                .ReturnsAsync(customer);
+                .ReturnsAsync(new User("Cliente", "cliente@email.com", "senha", UserType.Customer));
 
             this.productRepositoryMock.Setup(x => x.GetByIdAsync(productId))
                 .ReturnsAsync((Product)null);
 
-            await Assert.ThrowsAsync<DomainException>(() => this.orderService.CreateOrderAsync(createOrderDto));
+            await Assert.ThrowsAsync<DomainException>(() => this.orderService.CreateOrderAsync(new CreateOrderDTO(customerId, DeliveryType.Delivery, new List<CreateOrderItemDTO> { new CreateOrderItemDTO(productId, 1) })));
 
             this.VerifyLogMessage($"Iniciando registro de novo pedido para o cliente: {customerId}");
             this.VerifyLogMessage($"Produto com Id {productId} não encontrado", LogLevel.Warning);
@@ -128,25 +122,16 @@ namespace FastTechFood.Tests.Services
         {
             var customerId = Guid.NewGuid();
             var productId = Guid.NewGuid();
-            var createOrderDto = new CreateOrderDTO(
-                customerId,
-                DeliveryType.Delivery,
-                new List<CreateOrderItemDTO> { new CreateOrderItemDTO(productId, 1) });
 
-            var customer = new User("Cliente", "cliente@email.com", "senha", UserType.Customer);
-            var product = new Product("Produto Inativo", "Descrição", 10.99m, ProductType.Food)
-            {
-                Id = productId,
-                IsActive = false
-            };
+            var product = new Product("Produto Inativo", "Descrição", 10.99m, ProductType.Food) { Id = productId, IsActive = false };
 
             this.userRepositoryMock.Setup(x => x.GetByIdAsync(customerId))
-                .ReturnsAsync(customer);
+                .ReturnsAsync(new User("Cliente", "cliente@email.com", "senha", UserType.Customer));
 
             this.productRepositoryMock.Setup(x => x.GetByIdAsync(productId))
                 .ReturnsAsync(product);
 
-            await Assert.ThrowsAsync<DomainException>(() => this.orderService.CreateOrderAsync(createOrderDto));
+            await Assert.ThrowsAsync<DomainException>(() => this.orderService.CreateOrderAsync(new CreateOrderDTO(customerId, DeliveryType.Delivery, new List<CreateOrderItemDTO> { new CreateOrderItemDTO(productId, 1) })));
 
             this.VerifyLogMessage($"Iniciando registro de novo pedido para o cliente: {customerId}");
             this.VerifyLogMessage($"Produto {product.Name} não está disponível", LogLevel.Warning);

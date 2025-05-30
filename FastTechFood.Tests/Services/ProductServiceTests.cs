@@ -99,10 +99,9 @@ namespace FastTechFood.Tests.Services
         public async Task GetProductByIdAsync_ShouldReturnProduct_WhenExists()
         {
             var productId = Guid.NewGuid();
-            var product = new Product("Hambúrguer", "Descrição", 20.50m, ProductType.Sandwich) { Id = productId };
 
             this.productRepositoryMock.Setup(x => x.GetByIdAsync(productId))
-                .ReturnsAsync(product);
+                .ReturnsAsync(new Product("Hambúrguer", "Descrição", 20.50m, ProductType.Sandwich) { Id = productId });
 
             var result = await this.productService.GetProductByIdAsync(productId);
 
