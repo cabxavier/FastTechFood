@@ -32,13 +32,7 @@ namespace FastTechFood.Application.Tests.Services
         [Fact]
         public async Task RegisterCustomerAsync_WithValidData_ShouldRegisterSuccessfully()
         {
-            var registerDto = new RegisterCustomerDTO
-            (
-                "John Doe",
-                "john.doe@example.com",
-                 "Password123!",
-                 "12345678909"
-            );
+            var registerDto = new RegisterCustomerDTO("John Doe", "john.doe@example.com", "Password123!", "12345678909");
 
             this.validationServiceMock.Setup(x => x.ValidateEmail(registerDto.Email)).Returns(true);
             this.validationServiceMock.Setup(x => x.ValidateCPF(registerDto.CPF)).Returns(true);
@@ -58,13 +52,7 @@ namespace FastTechFood.Application.Tests.Services
         [Fact]
         public async Task RegisterCustomerAsync_WithInvalidEmail_ShouldThrowDomainException()
         {
-            var registerDto = new RegisterCustomerDTO
-            (
-                "John Doe",
-                "invalid-email",
-                "Password123!",
-                "12345678909"
-            );
+            var registerDto = new RegisterCustomerDTO("John Doe", "invalid-email", "Password123!", "12345678909");
 
             this.validationServiceMock.Setup(x => x.ValidateEmail(registerDto.Email)).Returns(false);
 
@@ -74,13 +62,7 @@ namespace FastTechFood.Application.Tests.Services
         [Fact]
         public async Task RegisterCustomerAsync_WithExistingEmail_ShouldThrowDomainException()
         {
-            var registerDto = new RegisterCustomerDTO
-            (
-                "John Doe",
-                "existing@example.com",
-                "Password123!",
-                "12345678909"
-            );
+            var registerDto = new RegisterCustomerDTO("John Doe", "existing@example.com", "Password123!", "12345678909");
 
             this.validationServiceMock.Setup(x => x.ValidateEmail(registerDto.Email)).Returns(true);
             this.validationServiceMock.Setup(x => x.ValidateCPF(registerDto.CPF)).Returns(true);
@@ -95,14 +77,7 @@ namespace FastTechFood.Application.Tests.Services
         [InlineData("Funcionario", UserType.Employee)]
         public async Task RegisterEmployeeAsync_WithDifferentRoles_ShouldSetCorrectUserType(string role, UserType expectedUserType)
         {
-            var registerDto = new RegisterEmployeeDTO
-            (
-                "Jane Doe",
-                "jane.doe@example.com",
-                "Password123!",
-                role,
-                "98765432109"
-            );
+            var registerDto = new RegisterEmployeeDTO("Jane Doe", "jane.doe@example.com", "Password123!", role, "98765432109");
 
             this.validationServiceMock.Setup(x => x.ValidateEmail(registerDto.Email)).Returns(true);
             this.validationServiceMock.Setup(x => x.ValidateCPF(registerDto.CPF)).Returns(true);
@@ -123,11 +98,7 @@ namespace FastTechFood.Application.Tests.Services
         [Fact]
         public async Task LoginAsync_WithValidCredentials_ShouldReturnToken()
         {
-            var loginDto = new LoginDTO
-            (
-                "valid@example.com",
-                "correctPassword"
-            );
+            var loginDto = new LoginDTO("valid@example.com", "correctPassword");
 
             var user = new User("Test User", loginDto.Email, BCrypt.Net.BCrypt.HashPassword(loginDto.Password), UserType.Customer, "12345678909");
 
@@ -140,11 +111,7 @@ namespace FastTechFood.Application.Tests.Services
         [Fact]
         public async Task LoginAsync_WithInvalidPassword_ShouldThrowDomainException()
         {
-            var loginDto = new LoginDTO
-            (
-                "valid@example.com",
-                "wrongPassword"
-            );
+            var loginDto = new LoginDTO("valid@example.com", "wrongPassword");
 
             this.userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDto.Email)).ReturnsAsync(new User("Test User", loginDto.Email, BCrypt.Net.BCrypt.HashPassword("correctPassword"), UserType.Customer, "12345678909"));
 
@@ -154,11 +121,7 @@ namespace FastTechFood.Application.Tests.Services
         [Fact]
         public async Task LoginAsync_WithNonExistentEmail_ShouldThrowDomainException()
         {
-            var loginDto = new LoginDTO
-            (
-                "nonexistent@example.com",
-                "anyPassword"
-            );
+            var loginDto = new LoginDTO("nonexistent@example.com", "anyPassword");
 
             this.userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDto.Email)).ReturnsAsync((User)null);
 

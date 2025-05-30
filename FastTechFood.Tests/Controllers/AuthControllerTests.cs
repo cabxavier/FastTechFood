@@ -20,13 +20,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task RegisterCustomer_WithValidData_ShouldReturnOkResult()
         {
-            var registerDto = new RegisterCustomerDTO
-            (
-                "John Doe",
-                "john.doe@example.com",
-                "Password123!",
-                "12345678909"
-            );
+            var registerDto = new RegisterCustomerDTO("John Doe", "john.doe@example.com", "Password123!", "12345678909");
 
             this.userServiceMock.Setup(x => x.RegisterCustomerAsync(registerDto))
                 .Returns(Task.CompletedTask);
@@ -37,13 +31,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task RegisterCustomer_WithInvalidData_ShouldReturnBadRequest()
         {
-            var registerDto = new RegisterCustomerDTO
-            (
-                "John Doe",
-                "invalid-email",
-                "Password123!",
-                "12345678909"
-            );
+            var registerDto = new RegisterCustomerDTO("John Doe", "invalid-email", "Password123!", "12345678909");
 
             this.userServiceMock.Setup(x => x.RegisterCustomerAsync(registerDto))
                 .ThrowsAsync(new Exception("E-mail inválido"));
@@ -54,14 +42,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task RegisterEmployee_WithValidData_ShouldReturnOkResult()
         {
-            var registerDto = new RegisterEmployeeDTO
-            (
-                "Jane Doe",
-                "jane.doe@example.com",
-                "Password123!",
-                "Gerente",
-                "98765432109"
-            );
+            var registerDto = new RegisterEmployeeDTO("Jane Doe", "jane.doe@example.com", "Password123!", "Gerente", "98765432109");
 
             this.userServiceMock.Setup(x => x.RegisterEmployeeAsync(registerDto))
                 .Returns(Task.CompletedTask);
@@ -72,14 +53,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task RegisterEmployee_WithInvalidData_ShouldReturnBadRequest()
         {
-            var registerDto = new RegisterEmployeeDTO
-            (
-                "Jane Doe",
-                "invalid-email",
-                "Password123!",
-                "Gerente",
-                "98765432109"
-            );
+            var registerDto = new RegisterEmployeeDTO("Jane Doe", "invalid-email", "Password123!", "Gerente", "98765432109");
 
             this.userServiceMock.Setup(x => x.RegisterEmployeeAsync(registerDto))
                 .ThrowsAsync(new Exception("E-mail inválido"));
@@ -90,11 +64,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task Login_WithValidCredentials_ShouldReturnOkWithToken()
         {
-            var loginDto = new LoginDTO
-            (
-                "valid@example.com",
-                "Password123!"
-            );
+            var loginDto = new LoginDTO("valid@example.com", "Password123!");
 
             this.userServiceMock.Setup(x => x.LoginAsync(loginDto))
                 .ReturnsAsync("fake-jwt-token");
@@ -105,11 +75,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task Login_WithInvalidCredentials_ShouldReturnUnauthorized()
         {
-            var loginDto = new LoginDTO
-            (
-                "invalid@example.com",
-                "WrongPassword"
-            );
+            var loginDto = new LoginDTO("invalid@example.com", "WrongPassword");
 
             this.userServiceMock.Setup(x => x.LoginAsync(loginDto))
                 .ThrowsAsync(new Exception("Credenciais inválidas"));
@@ -120,11 +86,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task Login_WithException_ShouldReturnUnauthorized()
         {
-            var loginDto = new LoginDTO
-            (
-                "error@example.com",
-                "Password123!"
-            );
+            var loginDto = new LoginDTO("error@example.com", "Password123!");
 
             this.userServiceMock.Setup(x => x.LoginAsync(loginDto))
                 .ThrowsAsync(new Exception("Erro no servidor"));

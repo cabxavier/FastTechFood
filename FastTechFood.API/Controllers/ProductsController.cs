@@ -38,6 +38,16 @@ namespace FastTechFood.API.Controllers
         {
             try
             {
+                if (productDTO == null)
+                {
+                    return BadRequest("Informe os dados do produto");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 await this.productService.AddProductAsync(productDTO);
 
                 return Ok("Produto criado com sucesso");
@@ -54,6 +64,26 @@ namespace FastTechFood.API.Controllers
         {
             try
             {
+                if (productDTO == null)
+                {
+                    return BadRequest("Informe os dados do produto");
+                }
+
+                if (productDTO.Id == Guid.Empty)
+                {
+                    return BadRequest("Id é obrigatório");
+                }
+
+                if (productDTO.Id != id)
+                {
+                    return BadRequest("O ID do produto não corresponde ao ID da rota");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 await this.productService.UpdateProductAsync(id, productDTO);
 
                 return Ok("Produto atualizdo com sucesso");

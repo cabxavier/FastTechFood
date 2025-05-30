@@ -40,7 +40,6 @@ namespace FastTechFood.Tests.Services
                     new CreateOrderItemDTO(Guid.NewGuid(), 1)
                 });
 
-            var customer = new User("Cliente", "cliente@email.com", "senha", UserType.Customer);
             var products = new List<Product>
             {
                 new Product("Produto 1", "Descrição", 10.99m, ProductType.Food) { Id = createOrderDto.Items[0].ProductId },
@@ -48,7 +47,7 @@ namespace FastTechFood.Tests.Services
             };
 
             this.userRepositoryMock.Setup(x => x.GetByIdAsync(customerId))
-                .ReturnsAsync(customer);
+                .ReturnsAsync(new User("Cliente", "cliente@email.com", "senha", UserType.Customer));
 
             this.productRepositoryMock.Setup(x => x.GetByIdAsync(createOrderDto.Items[0].ProductId))
                 .ReturnsAsync(products[0]);

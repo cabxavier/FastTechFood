@@ -25,13 +25,7 @@ namespace FastTechFood.Tests.Services
         [Fact]
         public async Task AddProductAsync_ShouldAddProduct_WhenValidData()
         {
-            var productDTO = new ProductDTO(
-                Guid.NewGuid(),
-                "Hambúrguer Artesanal",
-                "Delicioso hambúrguer 200g com queijo",
-                25.90m,
-                true,
-                ProductType.Sandwich);
+            var productDTO = new ProductDTO(Guid.NewGuid(), "Hambúrguer Artesanal", "Delicioso hambúrguer 200g com queijo", 25.90m, true, ProductType.Sandwich);
 
             this.productRepositoryMock.Setup(x => x.AddAsync(It.IsAny<Product>()))
                 .Returns(Task.CompletedTask);
@@ -116,14 +110,7 @@ namespace FastTechFood.Tests.Services
         public async Task UpdateProductAsync_ShouldUpdateProduct_WhenValidData()
         {
             var productId = Guid.NewGuid();
-
-            var productDTO = new ProductDTO(
-                productId,
-                "Hambúrguer Atualizado",
-                "Nova descrição",
-                22.50m,
-                true,
-                ProductType.Sandwich);
+            var productDTO = new ProductDTO(productId, "Hambúrguer Atualizado", "Nova descrição", 22.50m, true, ProductType.Sandwich);
 
             this.productRepositoryMock.Setup(x => x.GetByIdAsync(productId))
                 .ReturnsAsync(new Product("Hambúrguer", "Descrição", 20.50m, ProductType.Sandwich) { Id = productId });
@@ -149,7 +136,7 @@ namespace FastTechFood.Tests.Services
         public async Task UpdateProductAsync_ShouldThrowException_WhenProductNotFound()
         {
             var productId = Guid.NewGuid();
-            
+
             this.productRepositoryMock.Setup(x => x.GetByIdAsync(productId))
                 .ReturnsAsync((Product)null);
 
