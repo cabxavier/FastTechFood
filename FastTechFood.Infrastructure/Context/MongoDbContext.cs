@@ -10,7 +10,7 @@ namespace FastTechFood.Infrastructure.Context
 
         public MongoDbContext(IConfiguration configuration)
         {
-            var mongoClient = new MongoClient(configuration.GetConnectionString("MongoDB"));
+            var mongoClient = new MongoClient(configuration.GetConnectionString("MongoDBDocker"));
             this.mongoDatabase = mongoClient.GetDatabase("FastTechFood");
         }
 

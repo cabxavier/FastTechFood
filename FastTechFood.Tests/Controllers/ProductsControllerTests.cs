@@ -40,7 +40,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task GetAll_IsAllowAnonymous()
         {
-            Assert.True(typeof(ProductsController).GetMethod(nameof(ProductsController.GetAll)).GetCustomAttributes(typeof(AllowAnonymousAttribute), true).Any(), "AllowAnonymous attribute should be present");
+            Assert.True(typeof(ProductsController).GetMethod(nameof(ProductsController.GetAll)).GetCustomAttributes(typeof(AllowAnonymousAttribute), true).Any(), "AllowAnonymous o atributo deve estar presente");
         }
 
         [Fact]
@@ -71,7 +71,7 @@ namespace FastTechFood.API.Tests.Controllers
         {
             var authorizeAttributes = typeof(ProductsController).GetMethod(nameof(ProductsController.GetByType)).GetCustomAttributes(typeof(AuthorizeAttribute), true);
 
-            Assert.True(authorizeAttributes.Any(), "Authorize attribute should be present");
+            Assert.True(authorizeAttributes.Any(), "Authorize o atributo deve estar presente");
             var authorizeAttribute = authorizeAttributes.First() as AuthorizeAttribute;
             Assert.Equal("Customer", authorizeAttribute.Roles);
         }
@@ -116,7 +116,7 @@ namespace FastTechFood.API.Tests.Controllers
         public async Task Create_ReturnsBadRequest_WhenServiceThrowsException()
         {
             var productDto = new ProductDTO();
-            var exceptionMessage = "Invalid product data";
+            var exceptionMessage = "Dados de produto inválidos";
 
             this.productServiceMock.Setup(x => x.AddProductAsync(productDto))
                 .ThrowsAsync(new Exception(exceptionMessage));
@@ -130,7 +130,7 @@ namespace FastTechFood.API.Tests.Controllers
         {
             var authorizeAttributes = typeof(ProductsController).GetMethod(nameof(ProductsController.Create)).GetCustomAttributes(typeof(AuthorizeAttribute), true);
 
-            Assert.True(authorizeAttributes.Any(), "Authorize attribute should be present");
+            Assert.True(authorizeAttributes.Any(), "Authorize o atributo deve estar presente");
             var authorizeAttribute = authorizeAttributes.First() as AuthorizeAttribute;
             Assert.Equal("Manager", authorizeAttribute.Roles);
         }
@@ -139,7 +139,7 @@ namespace FastTechFood.API.Tests.Controllers
         public async Task Create_ValidatesModelState()
         {
             var invalidProductDto = new ProductDTO { Name = "" };
-            this.controller.ModelState.AddModelError("Name", "Name is required");
+            this.controller.ModelState.AddModelError("Name", "Name é obrigatório");
 
             Assert.IsType<BadRequestObjectResult>(await this.controller.Create(invalidProductDto));
         }
@@ -213,7 +213,7 @@ namespace FastTechFood.API.Tests.Controllers
         {
             var authorizeAttributes = typeof(ProductsController).GetMethod(nameof(ProductsController.Update)).GetCustomAttributes(typeof(AuthorizeAttribute), true);
 
-            Assert.True(authorizeAttributes.Any(), "Authorize attribute should be present");
+            Assert.True(authorizeAttributes.Any(), "Authorize o atributo deve estar presente");
             var authorizeAttribute = authorizeAttributes.First() as AuthorizeAttribute;
             Assert.Equal("Manager", authorizeAttribute.Roles);
         }
@@ -221,7 +221,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public async Task Update_ValidatesModelState()
         {
-            this.controller.ModelState.AddModelError("Name", "Name is required");
+            this.controller.ModelState.AddModelError("Name", "Name é obrigatório");
 
             Assert.IsType<BadRequestObjectResult>(await this.controller.Update(Guid.NewGuid(), new ProductDTO { Name = "" }));
         }
@@ -229,7 +229,7 @@ namespace FastTechFood.API.Tests.Controllers
         [Fact]
         public void Controller_HasAuthorizeAttribute()
         {
-            Assert.True(typeof(ProductsController).GetCustomAttributes(typeof(AuthorizeAttribute), true).Any(), "Authorize attribute should be present at controller level");
+            Assert.True(typeof(ProductsController).GetCustomAttributes(typeof(AuthorizeAttribute), true).Any(), "Authorize o atributo deve estar presente no nível do controlador");
         }
     }
 }

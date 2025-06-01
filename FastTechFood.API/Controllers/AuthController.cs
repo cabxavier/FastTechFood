@@ -75,9 +75,7 @@ namespace FastTechFood.API.Controllers
                     return BadRequest("Password é obrigatório");
                 }
 
-                var token = await this.userService.LoginAsync(loginDTO);
-
-                return Ok(new AuthDTO(token));
+                return Ok(new AuthDTO(await this.userService.LoginAsync(loginDTO)));
             }
             catch (Exception ex)
             {
