@@ -1,18 +1,15 @@
-# Definindo o nomdo do workflow
-name: Test Workflow
+name: Test and Deploy Workflow
 
-# Definindo quando o workflow será disparado
 on:
   push:
     branches: [ main ]
 
-# Definindo os jobs que o workflow executará
 jobs:
   test_jobs:
     name: Executando job de teste
     runs-on: ubuntu-latest
     steps:
-    - name: Step 1
+    - name: Checkout code
       uses: actions/checkout@v2
 
     - name: Setup .NET
@@ -30,7 +27,7 @@ jobs:
       run: dotnet test --no-build --logger "trx;LogFileName=test-results.trx"
 
     - name: Publish Test Results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Test-Results
         path: '**/test-results.trx'
@@ -39,20 +36,20 @@ jobs:
       uses: docker/login-action@v3.3.0
       with:
         username: 'cabxavier'
-        password: ${{ secrets.DOCKERHUB_FIAP_FASTTECHFOOD_PASSWORD }}
+        password: ${{ secrets.DOCKERHUB_FIAP_FASTTECHFOOD_API_PASSWORD }}
 
     - name: Check docker compose
       run: |
-            curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
+        curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
 
     - name: Build and start Docker Compose
       run: |
-          docker-compose up --build -d
+        docker-compose up --build -d
     
     - name: Build and push Docker images
       uses: docker/build-push-action@v6.9.0
       with:       
         context: .
-        tags: 'cabxavier/fiap-fasttechfood:latest'
+        tags: 'cabxavier/fiap-fasttechfood-api:latest'
         push: true
