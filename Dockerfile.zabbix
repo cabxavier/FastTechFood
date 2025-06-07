@@ -1,0 +1,35 @@
+# Versão alinhada com o compose (PostgreSQL)
+FROM zabbix/zabbix-server-pgsql:alpine-6.4-latest
+
+# Instalar dependências para monitoramento .NET (em imagem Alpine)
+RUN apk update && \
+    apk add --no-cache curl jq && \
+    rm -rf /var/cache/apk/*
+
+# Criar estrutura de diretórios com permissões corretas
+RUN mkdir -p /var/lib/zabbix/scripts && \
+    mkdir -p /etc/zabbix/zabbix_agentd.d && \
+    chown -R zabbix:zabbix /var/lib/zabbix/scripts && \
+    chown -R zabbix:zabbix /etc/zabbix/zabbix_agentd.d
+
+# Copiar scripts customizados
+COPY zabbix/scripts /var/lib/zabbix/scripts/
+COPY zabbix/userparameters /etc/zabbix/zabbix_agentd.d/
+
+# Ajustar permissões dos scripts
+RUN chmod +x /var/lib/zabbix/scripts/*.sh
+
+# Variáveis de ambiente alinhadas com o compose
+ENV ZBX_SERVER_HOST="zabbix-server" \
+    DB_SERVER_HOST="postgres" \
+    POSTGRES_USER="zabbix" \
+    POSTGRES_PASSWORD="zabbix" \
+    POSTGRES_DB="zabbix" \
+    ZBX_STARTPOLLERS=10 \
+    ZBX_DEBUGLEVEL=3
+
+# Portas expostas
+EXPOSE 10051
+
+# Comando de inicialização
+CMD ["/usr/sbin/zabbix_server", "--foreground", "-c", "/etc/zabbix/zabbix_server.conf"]

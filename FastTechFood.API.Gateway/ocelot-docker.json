@@ -1,0 +1,309 @@
+{
+    "Routes": [
+      {
+        "DownstreamPathTemplate": "/api/auth/register/customer",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/auth/register/customer",
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": null,
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/auth/register/employee",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/auth/register/employee",
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": null,
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/auth",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/auth",
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": null,
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+  
+      {
+        "DownstreamPathTemplate": "/api/orders",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/orders",
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/orders/pending",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/orders/pending",
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/orders/{id}/accept",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/orders/{id}/accept",
+        "UpstreamHttpMethod": [ "PUT" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/orders/{id}/reject",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/orders/{id}/reject",
+        "UpstreamHttpMethod": [ "PUT" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/orders/{id}/cancel",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/orders/{id}/cancel",
+        "UpstreamHttpMethod": [ "PUT" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+  
+      {
+        "DownstreamPathTemplate": "/api/products",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/products",
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": null,
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/products/type/{productType}",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/products/type/{productType}",
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/products",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/products",
+        "UpstreamHttpMethod": [ "POST" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/products/{id}",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "fasttechfoodapi",
+            "Port": 5000
+          }
+        ],
+        "UpstreamPathTemplate": "/api/products/{id}",
+        "UpstreamHttpMethod": [ "PUT" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        },
+        "RateLimitOptions": {
+          "ClientWhitelist": [],
+          "EnableRateLimiting": true,
+          "Period": "1m",
+          "PeriodTimespan": 1,
+          "Limit": 5,
+          "QuotaExceededMessage": "Rate limit exceeded",
+          "HttpStatusCode": 429
+        }
+      }
+    ],
+    "GlobalConfiguration": {
+      "BaseUrl": "https://fasttechfoodapigateway"
+    }
+  }

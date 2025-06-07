@@ -7,7 +7,7 @@ using FastTechFood.API.Gateway.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("ocelot-local-host.json", optional: false, reloadOnChange: true);
+builder.Configuration.AddJsonFile("ocelot-docker.json", optional: false, reloadOnChange: true);
 builder.Services.AddOcelot(builder.Configuration);
 
 var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
@@ -40,7 +40,7 @@ builder.Services.AddAuthentication(options =>
     {
         OnAuthenticationFailed = context =>
         {
-            Console.WriteLine($"Falha na autenticação: {context.Exception}");
+            Console.WriteLine($"Falha na autenticaï¿½ï¿½o: {context.Exception}");
             return Task.CompletedTask;
         },
         OnTokenValidated = context =>

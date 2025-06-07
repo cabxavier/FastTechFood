@@ -1,0 +1,83 @@
+<zabbix_export>
+    <version>6.0</version>
+    <date>2025-06-04T00:00:00Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template FastTechFood Prometheus</template>
+            <name>Template FastTechFood Prometheus</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Prometheus Metrics</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>FastTechFood Requests Total</name>
+                    <type>19</type>
+                    <key>fasttechfood.requests.total</key>
+                    <delay>60s</delay>
+                    <history>90d</history>
+                    <trends>365d</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <url>http://fasttechfoodapi:5000/metrics</url>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <allow_redirects>1</allow_redirects>
+                    <js_filter>var text = value;
+var regex = /fasttechfood_requests_total\s+(\d+)/;
+var match = regex.exec(text);
+if (match) {
+  return parseInt(match[1]);
+} else {
+  return null;
+}</js_filter>
+                    <applications>
+                        <application>
+                            <name>Prometheus Metrics</name>
+                        </application>
+                    </applications>
+                </item>
+
+                <item>
+                    <name>FastTechFood Response Duration</name>
+                    <type>19</type>
+                    <key>fasttechfood.response.duration</key>
+                    <delay>60s</delay>
+                    <history>90d</history>
+                    <trends>365d</trends>
+                    <status>0</status>
+                    <value_type>0</value_type>
+                    <units>s</units>
+                    <url>http://fasttechfoodapi:5000/metrics</url>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <allow_redirects>1</allow_redirects>
+                    <js_filter>var text = value;
+var regex = /fasttechfood_response_duration_seconds\s+([\d.]+)/;
+var match = regex.exec(text);
+if (match) {
+  return parseFloat(match[1]);
+} else {
+  return null;
+}</js_filter>
+                    <applications>
+                        <application>
+                            <name>Prometheus Metrics</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+        </template>
+    </templates>
+</zabbix_export>

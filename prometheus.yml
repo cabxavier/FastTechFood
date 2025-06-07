@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: 'fasttechfoodapi'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['fasttechfoodapi:5000']
+
+  - job_name: 'zabbix-server'
+    static_configs:
+      - targets: ['zabbix-server:10051']
+
+  - job_name: 'zabbix_agent2'
+    static_configs:
+      - targets: ['zabbix-agent2:10050']
+
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['mongodb:27017']
