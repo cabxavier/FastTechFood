@@ -30,7 +30,7 @@ services:
       - mongodb
     networks:
       - app-network
-      - zabbix-net  # integração com zabbix
+      - zabbix-net
 
   fasttechfoodapigateway:
     image: fast-tech-food-api-gateway
@@ -109,7 +109,9 @@ services:
       - zabbix-server
     environment:
       ZBX_SERVER_HOST: zabbix-server
+      ZBX_SERVER_PORT: 10051
       ZBX_HOSTNAME: Zabbix_server
+      ZBX_SERVER_ALLOWLIST: 127.0.0.1,zabbix-server,172.19.0.1,172.18.0.1
     volumes:
       - ./zabbix_agent2.conf:/etc/zabbix/zabbix_agent2.conf:ro
       - ./zabbix_agent2.d/:/etc/zabbix/zabbix_agent2.d/
@@ -118,6 +120,7 @@ services:
       - "10050:10050"
     networks:
       - zabbix-net
+
 
   prometheus:
     image: prom/prometheus:latest
@@ -136,7 +139,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.EntryPoint
-    restart: always
+    restart: "no"
     depends_on:
       - zabbix-web
     volumes:

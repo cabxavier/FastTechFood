@@ -1,87 +1,82 @@
-#!/usr/bin/env python3
-import os
-import time
 import requests
 import json
+import time
 
-ZABBIX_URL = os.environ.get('ZABBIX_URL')  # ex: http://zabbix-web:8080
-ZABBIX_USER = os.environ.get('ZABBIX_USER')
-ZABBIX_PASS = os.environ.get('ZABBIX_PASS')
-TEMPLATE_PATH = '/template.xml'
+ZABBIX_URL = "http://zabbix-web:8080/api_jsonrpc.php"
+ZABBIX_USER = "Admin"
+ZABBIX_PASS = "zabbix"
+MAX_RETRIES = 60  # Até 5 minutos
+WAIT_SECONDS = 5
 
-# Aguarda o Zabbix Web estar disponível
-print(f"⏳ Aguardando Zabbix Web subir em {ZABBIX_URL}...")
-while True:
-    try:
-        # Testa a home web, não a API aqui
-        response = requests.get(ZABBIX_URL)
-        if response.status_code == 200:
-            break
-    except requests.exceptions.ConnectionError:
-        pass
-    time.sleep(10)
-print("✅ Zabbix Web está online!")
+headers = {"Content-Type": "application/json-rpc"}
 
-# Autentica na API do Zabbix
-print("🔐 Autenticando na API do Zabbix...")
-auth_payload = {
-    "jsonrpc": "2.0",
-    "method": "user.login",
-    "params": {
-        "user": ZABBIX_USER,
-        "password": ZABBIX_PASS
-    },
-    "id": 1,
-    "auth": None
-}
-auth_response = requests.post(f"{ZABBIX_URL}/api_jsonrpc.php", json=auth_payload)
-auth_result = auth_response.json()
 
-token = auth_result.get('result')
-if not token:
-    print("❌ Falha na autenticação.")
-    print(json.dumps(auth_result.get('error', {}), indent=2))
-    exit(1)
-print("🔑 Token obtido com sucesso!")
+def wait_for_zabbix():
+    print("⏳ Aguardando Zabbix frontend ficar disponível...")
+    for i in range(MAX_RETRIES):
+        try:
+            r = requests.get(ZABBIX_URL, timeout=3)
+            if r.status_code == 200:
+                print("✅ Zabbix frontend disponível.")
+                return
+        except Exception:
+            pass
+        print(f"🔁 Tentativa {i + 1}/{MAX_RETRIES} - Aguardando {WAIT_SECONDS}s...")
+        time.sleep(WAIT_SECONDS)
+    raise Exception("❌ Zabbix frontend não está acessível após várias tentativas.")
 
-# Lê o conteúdo do template
-if not os.path.isfile(TEMPLATE_PATH):
-    print(f"❌ Template {TEMPLATE_PATH} não encontrado.")
-    exit(1)
-with open(TEMPLATE_PATH, 'r') as file:
-    template_content = file.read()
 
-# Importa o template
-print("📦 Importando template...")
-import_payload = {
-    "jsonrpc": "2.0",
-    "method": "configuration.import",
-    "params": {
-        "format": "xml",
-        "rules": {
-            "applications": {"createMissing": True, "updateExisting": True},
-            "discoveryRules": {"createMissing": True, "updateExisting": True},
-            "graphs": {"createMissing": True, "updateExisting": True},
-            "groups": {"createMissing": True},
-            "hosts": {"createMissing": True, "updateExisting": True},
-            "images": {"createMissing": True, "updateExisting": True},
-            "items": {"createMissing": True, "updateExisting": True},
-            "maps": {"createMissing": True, "updateExisting": True},
-            "screens": {"createMissing": True, "updateExisting": True},
-            "templateLinkage": {"createMissing": True},
-            "templates": {"createMissing": True, "updateExisting": True},
-            "triggers": {"createMissing": True, "updateExisting": True}
-        },
-        "source": template_content
-    },
-    "auth": token,
-    "id": 2
-}
-import_response = requests.post(f"{ZABBIX_URL}/api_jsonrpc.php", json=import_payload)
-import_result = import_response.json()
-if 'error' in import_result:
-    print("❌ Erro ao importar template:")
-    print(json.dumps(import_result['error'], indent=2))
-    exit(1)
+def zabbix_api(method, params, auth=None):
+    payload = {
+        "jsonrpc": "2.0",
+        "method": method,
+        "params": params,
+        "id": 1,
+        "auth": auth,
+    }
+    response = requests.post(ZABBIX_URL, headers=headers, data=json.dumps(payload))
+    result = response.json()
+    if "error" in result:
+        raise Exception(f"Zabbix API error: {result['error']}")
+    return result["result"]
 
-print("✅ Template importado com sucesso!")
+
+wait_for_zabbix()
+
+auth = zabbix_api("user.login", {"user": ZABBIX_USER, "password": ZABBIX_PASS})
+
+# Host group
+group_name = "Linux servers"
+groups = zabbix_api("hostgroup.get", {"filter": {"name": [group_name]}}, auth)
+group_id = groups[0]["groupid"] if groups else zabbix_api("hostgroup.create", {"name": group_name}, auth)["groupids"][0]
+
+# Template
+template_name = "Template OS Linux by Zabbix agent active"
+templates = zabbix_api("template.get", {"filter": {"host": [template_name]}}, auth)
+if not templates:
+    raise Exception("Template not found.")
+template_id = templates[0]["templateid"]
+
+# Host
+host_name = "Zabbix_server"
+host_dns = "zabbix-agent2"
+
+hosts = zabbix_api("host.get", {"filter": {"host": [host_name]}}, auth)
+if not hosts:
+    zabbix_api("host.create", {
+        "host": host_name,
+        "name": host_name,
+        "interfaces": [{
+            "type": 1,
+            "main": 1,
+            "useip": 0,
+            "ip": "",
+            "dns": host_dns,
+            "port": "10050"
+        }],
+        "groups": [{"groupid": group_id}],
+        "templates": [{"templateid": template_id}]
+    }, auth)
+    print("✅ Host Zabbix_server criado com template com sucesso.")
+else:
+    print("ℹ️ Host Zabbix_server já existe.")
