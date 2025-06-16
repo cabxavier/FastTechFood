@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zabbix-server-config
+  namespace: fasttechfood
+data:
+  zabbix_server.conf: |
+    LogType=console
+    DBHost=zabbix-db
+    DBName=zabbix
+    DBUser=zabbix
+    DBPassword=zabbix_pass

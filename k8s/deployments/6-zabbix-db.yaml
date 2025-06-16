@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zabbix-db
+  namespace: fasttechfood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zabbix-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zabbix-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0.32
+        env:
+        - name: MYSQL_DATABASE
+          value: "zabbix"
+        - name: MYSQL_USER
+          value: "zabbix"
+        - name: MYSQL_PASSWORD
+          value: "zabbix_pass"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "root_pass"
+        ports:
+        - containerPort: 3306
+        args:
+        - --character-set-server=utf8mb4
+        - --collation-server=utf8mb4_bin
+        - --default-authentication-plugin=mysql_native_password
+        - --max_allowed_packet=128M
+        - --log_bin_trust_function_creators=1
+        - --explicit_defaults_for_timestamp=1
+        volumeMounts:
+        - name: zabbix-db-data
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1"
+        readinessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+            - -uroot
+            - -proot_pass
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+            - -uroot
+            - -proot_pass
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+      volumes:
+      - name: zabbix-db-data
+        persistentVolumeClaim:
+          claimName: zabbix-db-pvc

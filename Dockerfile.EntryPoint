@@ -1,16 +1,12 @@
 FROM python:3.10-slim
 
-# Instalando dependências mínimas do sistema (opcional, mas recomendado)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
 
-# Instalando a biblioteca requests
 RUN pip install --no-cache-dir requests
 
-# Copiando o script de entrada e o template XML
 COPY entrypoint.py /entrypoint.py
 COPY template_fasttechfood_prometheus.xml /template.xml
 
-# Definindo o script como ponto de entrada
-ENTRYPOINT ["python", "/entrypoint.py"]
+ENTRYPOINT ["python3", "/entrypoint.py"]

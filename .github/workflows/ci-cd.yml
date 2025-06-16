@@ -53,3 +53,58 @@ jobs:
         context: .
         tags: 'cabxavier/fiap-fasttechfood-api:latest'
         push: true
+
+  deploy_to_kubernetes:
+    name: Deploy to Kubernetes
+    needs: test_jobs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install kubectl and kind
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+          
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+
+      - name: Create Kind cluster
+        run: |
+          cat <<EOF > kind-config.yaml
+          kind: Cluster
+          apiVersion: kind.x-k8s.io/v1alpha4
+          nodes:
+          - role: control-plane
+            extraPortMappings:
+            - containerPort: 30003
+              hostPort: 30003
+              protocol: TCP
+          EOF
+          
+          kind create cluster --config kind-config.yaml
+          kubectl cluster-info
+
+      - name: Create namespace
+        run: kubectl create namespace fasttechfood || true
+
+      - name: Deploy Kubernetes manifests
+        run: |
+          kubectl apply -f ./k8s/persistentvolumeclaims/
+          kubectl apply -f ./k8s/configmaps/
+          kubectl apply -f ./k8s/deployments/
+          kubectl apply -f ./k8s/services/
+          
+      - name: Verify deployments
+        run: |
+          echo "### Cluster status ###"
+          kubectl get nodes
+          
+          echo "### Resources in fasttechfood namespace ###"
+          kubectl get all,pvc -n fasttechfood
+          
+          echo "### Pods details ###"
+          kubectl describe pods -n fasttechfood

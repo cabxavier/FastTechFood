@@ -7,3 +7,9 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets: ['fasttechfoodapi:5000']
+    relabel_configs:
+      - source_labels: ['__address__']
+        target_label: 'instance'
+        replacement: 'fasttechfoodapi:5000'
+      - target_label: 'job'
+        replacement: 'fasttechfoodapi'

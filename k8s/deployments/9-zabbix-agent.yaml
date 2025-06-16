@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zabbix-agent2
+  namespace: fasttechfood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zabbix-agent2
+  template:
+    metadata:
+      labels:
+        app: zabbix-agent2
+    spec:
+      containers:
+      - name: zabbix-agent2
+        image: zabbix/zabbix-agent2:alpine-latest
+        env:
+        - name: ZBX_SERVER_HOST
+          value: "zabbix-server"
+        - name: ZBX_SERVER_PORT
+          value: "10051"
+        - name: ZBX_HOSTNAME
+          value: "Zabbix_server"           # Deve ser exatamente esse nome criado no Zabbix via API
+        - name: ZBX_SERVER_ALLOWLIST
+          value: "127.0.0.1,zabbix-server"
+        ports:
+        - containerPort: 10050
+        volumeMounts:
+        - name: zabbix-agent-config
+          mountPath: /etc/zabbix/zabbix_agent2.conf
+          subPath: zabbix_agent2.conf
+      volumes:
+      - name: zabbix-agent-config
+        configMap:
+          name: zabbix-agent-config

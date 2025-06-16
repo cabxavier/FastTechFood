@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zabbix-web
+  namespace: fasttechfood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zabbix-web
+  template:
+    metadata:
+      labels:
+        app: zabbix-web
+    spec:
+      containers:
+      - name: zabbix-web
+        image: zabbix/zabbix-web-nginx-mysql:alpine-latest
+        env:
+        - name: DB_SERVER_HOST
+          value: "zabbix-db"
+        - name: MYSQL_DATABASE
+          value: "zabbix"
+        - name: MYSQL_USER
+          value: "zabbix"
+        - name: MYSQL_PASSWORD
+          value: "zabbix_pass"
+        - name: ZBX_SERVER_HOST
+          value: "zabbix-server"
+        - name: PHP_TZ
+          value: "America/Sao_Paulo"
+        ports:
+        - containerPort: 8080

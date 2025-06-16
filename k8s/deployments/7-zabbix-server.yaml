@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zabbix-server
+  namespace: fasttechfood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zabbix-server
+  template:
+    metadata:
+      labels:
+        app: zabbix-server
+    spec:
+      containers:
+      - name: zabbix-server
+        image: zabbix/zabbix-server-mysql:alpine-latest
+        env:
+        - name: DB_SERVER_HOST
+          value: "zabbix-db"
+        - name: MYSQL_DATABASE
+          value: "zabbix"
+        - name: MYSQL_USER
+          value: "zabbix"
+        - name: MYSQL_PASSWORD
+          value: "zabbix_pass"
+        ports:
+        - containerPort: 10051
+        volumeMounts:
+        - name: zabbix-server-config
+          mountPath: /etc/zabbix/zabbix_server.conf
+          subPath: zabbix_server.conf
+      volumes:
+      - name: zabbix-server-config
+        configMap:
+          name: zabbix-server-config

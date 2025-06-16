@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fasttechfood-api-gateway
+  namespace: fasttechfood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fasttechfood-api-gateway
+  template:
+    metadata:
+      labels:
+        app: fasttechfood-api-gateway
+    spec:
+      containers:
+      - name: fasttechfood-api-gateway
+        image: cabxavier/fiap-fasttechfood-api-gateway
+        ports:
+        - containerPort: 5001
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:5001"

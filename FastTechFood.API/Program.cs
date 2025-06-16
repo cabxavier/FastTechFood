@@ -15,18 +15,31 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using Prometheus;
-using System.Text;
 using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração básica da aplicação
+// Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configuração do MongoDB
+// OpenTelemetry Metrics + Prometheus Exporter
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(metrics =>
+    {
+        metrics.SetResourceBuilder(ResourceBuilder.CreateDefault()
+            .AddService("FastTechFoodAPI"))
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddRuntimeInstrumentation()
+            .AddProcessInstrumentation()
+            .AddPrometheusExporter();
+    });
+
+// MongoDB
 builder.Services.AddSingleton<MongoDbContext>(sp =>
     new MongoDbContext(builder.Configuration));
 
@@ -35,15 +48,14 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
     var mongoDbContext = sp.GetRequiredService<MongoDbContext>();
     return mongoDbContext.mongoDatabase;
 });
-
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
-// Registro de repositórios
+// Repositórios
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
-// Configuração JWT
+// JWT
 var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSettingsSection);
 
@@ -52,13 +64,11 @@ var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
 
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 
-// Registro de serviços
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IValidationService, ValidationService>();
 
-// Configuração de autenticação
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -95,7 +105,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Configuração de autorização
+// Autorização
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Customer", policy => policy.RequireRole("Customer"));
@@ -104,12 +114,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Manager", policy => policy.RequireRole("Manager"));
 });
 
-// Configuração de logging
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
-
-// Configuração de Health Checks e Métricas
-// Configuração de Health Checks
+// Health Checks
 builder.Services.AddHealthChecks()
     .AddMongoDb(
         clientFactory: sp => new MongoClient(builder.Configuration.GetConnectionString("MongoDB")),
@@ -121,26 +126,13 @@ builder.Services.AddHealthChecks()
         name: "memory",
         tags: new[] { "ready" });
 
-// Configuração de Métricas
-builder.Services.AddOpenTelemetry()
-    .WithMetrics(metrics =>
-    {
-        metrics.AddAspNetCoreInstrumentation()
-               .AddHttpClientInstrumentation()
-               .AddRuntimeInstrumentation()
-               .AddProcessInstrumentation();
-
-        // Configuração correta conforme a assinatura do método
-        metrics.AddPrometheusExporter(name: null, configure: options =>
-        {
-            options.ScrapeEndpointPath = "/metrics";
-            options.ScrapeResponseCacheDurationMilliseconds = 0;
-        });
-    });
+// Logging
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 var app = builder.Build();
 
-// Execução de migrações
+// Executar Migrations
 using (var scope = app.Services.CreateScope())
 {
     try
@@ -156,20 +148,18 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configuração do pipeline de requisições HTTP
+// Pipeline HTTP
 app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-// Configuração de métricas
-app.UseMetricServer();
-app.UseHttpMetrics(options =>
-{
-    options.AddCustomLabel("host", context => context.Request.Host.Host);
-});
+app.UseAuthentication();
+app.UseAuthorization();
 
-// Mapeamento de endpoints de monitoramento
+app.MapControllers();
+
+// Health Endpoints
 app.MapHealthChecks("/health");
 app.MapHealthChecks("/health/ready", new HealthCheckOptions
 {
@@ -180,11 +170,9 @@ app.MapHealthChecks("/health/live", new HealthCheckOptions
     Predicate = _ => false
 });
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.MapPrometheusScrapingEndpoint("/metrics");
 
-app.MapControllers();
-
+// Middleware de tratamento de exceções JWT
 app.UseMiddleware<JwtExceptionHandlerMiddleware>();
 
 app.Run();

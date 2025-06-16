@@ -5,7 +5,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -30,7 +30,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -55,7 +55,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -81,7 +81,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -106,7 +106,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -131,7 +131,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -156,7 +156,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -181,7 +181,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -207,7 +207,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -232,7 +232,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -257,7 +257,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -282,7 +282,7 @@
         "DownstreamScheme": "http",
         "DownstreamHostAndPorts": [
           {
-            "Host": "fasttechfoodapi",
+            "Host": "fasttechfood-api",
             "Port": 5000
           }
         ],
@@ -304,6 +304,6 @@
       }
     ],
     "GlobalConfiguration": {
-      "BaseUrl": "https://fasttechfoodapigateway"
+      "BaseUrl": "https://fasttechfood-api-gateway"
     }
   }

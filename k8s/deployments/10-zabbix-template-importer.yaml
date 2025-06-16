@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zabbix-template-importer
+  namespace: fasttechfood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zabbix-template-importer
+  template:
+    metadata:
+      labels:
+        app: zabbix-template-importer
+    spec:
+      containers:
+      - name: zabbix-template-importer
+        image: cabxavier/fiap-fasttechfood-api-entrypoint
+        env:
+        - name: ZABBIX_URL
+          value: "http://zabbix-web:8080/api_jsonrpc.php"
+        - name: ZABBIX_USER
+          value: "Admin"
+        - name: ZABBIX_PASS
+          value: "zabbix"
+        command: ["python3", "/entrypoint.py"]

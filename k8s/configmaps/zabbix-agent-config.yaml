@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zabbix-agent-config
+  namespace: fasttechfood
+data:
+  zabbix_agent2.conf: |
+    Server=zabbix-server
+    ServerActive=zabbix-server
+    Hostname=Zabbix_server
+    AllowKey=system.run[*]
+    Include=/etc/zabbix/zabbix_agent2.d/*.conf

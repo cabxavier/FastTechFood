@@ -1,0 +1,51 @@
+{
+  "title": "ASP.NET Core Metrics",
+  "uid": "fast-tech-food-api-dashboard",
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "title": "Requests Duration",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_request_duration_seconds_bucket{job=\"fasttechfoodapi\", instance=\"fasttechfoodapi:5000\"}[$__rate_interval])) by (le))",
+          "legendFormat": "p50",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{job=\"fasttechfoodapi\", instance=\"fasttechfoodapi:5000\"}[$__rate_interval])) by (le))",
+          "legendFormat": "p95",
+          "refId": "B"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "job",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(http_server_active_requests, job)",
+        "refresh": 2
+      },
+      {
+        "name": "instance",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(http_server_active_requests{job=~\"$job\"}, instance)",
+        "refresh": 2
+      }
+    ]
+  }
+}
