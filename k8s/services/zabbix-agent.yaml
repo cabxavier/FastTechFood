@@ -10,4 +10,5 @@ spec:
     - protocol: TCP
       port: 10050
       targetPort: 10050
+      nodePort: 31050
   type: NodePort
