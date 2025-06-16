@@ -105,6 +105,11 @@ jobs:
           
           echo "### Resources in fasttechfood namespace ###"
           kubectl get all,pvc -n fasttechfood
+
+          kubectl get deployments -n fasttechfood
+          kubectl get services -n fasttechfood
+          kubectl get pods -n fasttechfood
+          kubectl get pvc -n fasttechfood
           
           echo "### Pods details ###"
           kubectl describe pods -n fasttechfood
