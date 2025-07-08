@@ -1,6 +1,6 @@
 ﻿using FastTechFood.Application.Dtos;
 using FastTechFood.Application.Interfaces;
-using FastTechFood.Application.Services;
+using FastTechFood.Messaging.Publishers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +12,12 @@ namespace FastTechFood.API.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrderService orderService;
+        private readonly IRabbitMQPublisherService rabbitMQPublisherService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService, IRabbitMQPublisherService rabbitMQPublisherService)
         {
             this.orderService = orderService;
+            this.rabbitMQPublisherService = rabbitMQPublisherService;
         }
 
         [HttpPost]
@@ -32,7 +34,9 @@ namespace FastTechFood.API.Controllers
                     return BadRequest("Informe os dados do pedido");
                 }
 
-                return Ok(await this.orderService.CreateOrderAsync(createOrderDTO));
+                await this.rabbitMQPublisherService.SendMessageAsync(createOrderDTO, this.rabbitMQPublisherService.GetConfiguration().GetSection("RabbitMQ")["QueueCreateOrder"] ?? string.Empty);
+
+                return Ok(createOrderDTO);
             }
             catch (Exception ex)
             {

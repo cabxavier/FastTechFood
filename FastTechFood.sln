@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastTechFood.API.Gateway", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastTechFood.Tests", "FastTechFood.Tests\FastTechFood.Tests.csproj", "{BCD2E740-270C-4021-8834-3D916ECDAC58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastTechFood.Messaging", "FastTechFood.Messaging\FastTechFood.Messaging.csproj", "{F3FE678B-00E0-42DE-9E0B-017000764FCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,8 +47,15 @@ Global
 		{BCD2E740-270C-4021-8834-3D916ECDAC58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCD2E740-270C-4021-8834-3D916ECDAC58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCD2E740-270C-4021-8834-3D916ECDAC58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3FE678B-00E0-42DE-9E0B-017000764FCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3FE678B-00E0-42DE-9E0B-017000764FCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3FE678B-00E0-42DE-9E0B-017000764FCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3FE678B-00E0-42DE-9E0B-017000764FCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8EB129F5-F2B3-486A-B4F4-0A7A55A7B737}
 	EndGlobalSection
 EndGlobal

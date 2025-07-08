@@ -1,28 +1,36 @@
-﻿using Moq;
-using System.Security.Claims;
-using FastTechFood.API.Controllers;
+﻿using FastTechFood.API.Controllers;
 using FastTechFood.Application.Dtos;
 using FastTechFood.Application.Interfaces;
 using FastTechFood.Domain.Enums;
+using FastTechFood.Messaging.Publishers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Moq;
+using System.Security.Claims;
 
 namespace FastTechFood.API.Tests.Controllers
 {
     public class OrdersControllerTests
     {
         private readonly Mock<IOrderService> orderServiceMock;
+        private readonly Mock<IRabbitMQPublisherService> rabbitMQPublisherServiceMock;
         private readonly OrdersController controller;
 
         public OrdersControllerTests()
         {
             this.orderServiceMock = new Mock<IOrderService>();
-            this.controller = new OrdersController(this.orderServiceMock.Object);
+            this.rabbitMQPublisherServiceMock = new Mock<IRabbitMQPublisherService>();
+            this.controller = new OrdersController(this.orderServiceMock.Object, this.rabbitMQPublisherServiceMock.Object);
         }
 
         [Fact]
         public async Task Create_WithValidDto_ShouldReturnOk()
         {
+            var queueName = "queue-create-order";
+
+            var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string> { { "RabbitMQ:QueueCreateOrder", queueName } }).Build();
+
             var createOrderDto = new CreateOrderDTO
             {
                 CustomerId = Guid.NewGuid(),
@@ -33,23 +41,21 @@ namespace FastTechFood.API.Tests.Controllers
                 }
             };
 
-            var expectedOrderDto = new OrderDTO(
-                Id: Guid.NewGuid(),
-                CustomerId: createOrderDto.CustomerId,
-                CreationDate: DateTime.UtcNow,
-                Status: OrderStatus.Pending,
-                DeliveryType: createOrderDto.DeliveryType,
-                CancellationReason: null,
-                Items: new List<OrderItemDTO>(),
-                Total: 0
-            );
-
-            this.orderServiceMock.Setup(x => x.CreateOrderAsync(createOrderDto))
-                .ReturnsAsync(expectedOrderDto);
-
             this.SetupUserWithRole("Customer");
 
-            Assert.Equal(expectedOrderDto, Assert.IsType<OkObjectResult>(await this.controller.Create(createOrderDto)).Value);
+            this.rabbitMQPublisherServiceMock.Setup(x => x.GetConfiguration()).Returns(configuration);
+
+            this.rabbitMQPublisherServiceMock.Setup(x => x.SendMessageAsync(It.IsAny<CreateOrderDTO>(), queueName)).Returns(Task.CompletedTask);
+
+            Assert.Equal(createOrderDto, (Assert.IsType<OkObjectResult>(await this.controller.Create(createOrderDto))).Value);
+        }
+
+        [Fact]
+        public async Task Create_WhenUserIsNotCustomer_ShouldReturnForbid()
+        {
+            this.SetupUserWithoutRole("Customer");
+
+            Assert.IsType<ForbidResult>(await this.controller.Create(new CreateOrderDTO()));
         }
 
         [Fact]
@@ -57,7 +63,9 @@ namespace FastTechFood.API.Tests.Controllers
         {
             this.SetupUserWithRole("Customer");
 
-            Assert.IsType<BadRequestObjectResult>(await this.controller.Create(null));
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(await this.controller.Create(null));
+
+            Assert.Equal("Informe os dados do pedido", badRequestResult.Value);
         }
 
         [Fact]

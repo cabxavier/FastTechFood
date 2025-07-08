@@ -30,6 +30,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\FastTechFood.Application\FastTechFood.Application.csproj" />
 		<ProjectReference Include="..\FastTechFood.Infrastructure\FastTechFood.Infrastructure.csproj" />
+		<ProjectReference Include="..\FastTechFood.Messaging\FastTechFood.Messaging.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 using FastTechFood.API.Middlewares;
+using FastTechFood.Application.Dtos;
 using FastTechFood.Application.Interfaces;
 using FastTechFood.Application.Services;
 using FastTechFood.Domain.Interfaces;
@@ -8,6 +9,8 @@ using FastTechFood.Infrastructure.Interfaces;
 using FastTechFood.Infrastructure.Migrations;
 using FastTechFood.Infrastructure.Repositories;
 using FastTechFood.Infrastructure.Services;
+using FastTechFood.Messaging.Consumers;
+using FastTechFood.Messaging.Publishers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +23,8 @@ using OpenTelemetry.Resources;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
 
 // Swagger
 builder.Services.AddControllers();
@@ -68,6 +73,19 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IValidationService, ValidationService>();
+builder.Services.AddSingleton<IRabbitMQPublisherService, RabbitMQPublisherService>();
+
+builder.Services.AddScoped<IConsumer<CreateOrderDTO>, PedidoConsumerHandler>();
+
+builder.Services.AddHostedService(sp =>
+    new RabbitMQConsumerService<CreateOrderDTO>(
+        sp.GetRequiredService<IConfiguration>(),
+        sp.GetRequiredService<ILogger<RabbitMQConsumerService<CreateOrderDTO>>>(),
+        sp.GetRequiredService<IServiceScopeFactory>(),
+        queueName: builder.Configuration.GetSection("RabbitMQ")["QueueCreateOrder"] ?? string.Empty
+    ));
+
+//builder.Services.AddSingleton<RabbitMQPublisherService>();
 
 builder.Services.AddAuthentication(options =>
 {
