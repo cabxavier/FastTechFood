@@ -35,6 +35,8 @@ namespace FastTechFood.Messaging.Consumers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            this.logger.LogInformation($"Iniciando consumo da fila '{this.queueName}'...");
+
             using var connection = await this.factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 
@@ -45,9 +47,11 @@ namespace FastTechFood.Messaging.Consumers
             {
                 try
                 {
+                    var json = Encoding.UTF8.GetString(ea.Body.ToArray());
+                    this.logger.LogInformation($"Mensagem recebida da fila '{this.queueName}': {json}");
+
                     using var scope = this.scopeFactory.CreateScope();
                     var handler = scope.ServiceProvider.GetRequiredService<IConsumer<T>>();
-                    var json = Encoding.UTF8.GetString(ea.Body.ToArray());
                     var message = JsonSerializer.Deserialize<T>(json);
 
                     if (message != null)

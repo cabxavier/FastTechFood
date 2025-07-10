@@ -29,3 +29,13 @@ spec:
           value: "http://*:5000/metrics"
         - name: ConnectionStrings__MongoDBDocker
           value: "mongodb://mongodb:27017"
+        - name: RabbitMQ__HostName
+          value: "rabbitmq"
+        - name: RabbitMQ__UserName
+          value: "guest"
+        - name: RabbitMQ__Password
+          value: "guest"
+        - name: RabbitMQ__Port
+          value: "5672"
+        - name: RabbitMQ__QueueCreateOrder
+          value: "createorder"
