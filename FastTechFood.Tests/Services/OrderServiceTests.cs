@@ -66,7 +66,7 @@ namespace FastTechFood.Tests.Services
             Assert.Equal(37.48m, result.Total);
 
             this.VerifyLogMessage($"Iniciando registro de novo pedido para o cliente: {customerId}");
-            this.VerifyLogMessage($"Pedido registrado com sucesso para o cliente: {customerId}");
+            this.VerifyLogMessage($"Pedido: {result.Id} registrado com sucesso para o cliente: {customerId}");
         }
 
         [Fact]

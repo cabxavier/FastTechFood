@@ -73,7 +73,7 @@ namespace FastTechFood.Application.Services
 
                 var orderDTO = MapToOrderDTO(order);
 
-                this.logger.LogInformation("Pedido {orderId} registrado com sucesso para o cliente: {CustomerId}", order.Id, createOrderDTO.CustomerId);         
+                this.logger.LogInformation("Pedido: {orderId} registrado com sucesso para o cliente: {CustomerId}", order.Id, createOrderDTO.CustomerId);         
 
                 return orderDTO;
             }
