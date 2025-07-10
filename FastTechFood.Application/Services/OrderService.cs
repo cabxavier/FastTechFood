@@ -71,9 +71,11 @@ namespace FastTechFood.Application.Services
 
                 await this.orderRepository.AddAsync(order);
 
-                this.logger.LogInformation("Pedido registrado com sucesso para o cliente: {CustomerId}", createOrderDTO.CustomerId);
+                var orderDTO = MapToOrderDTO(order);
 
-                return MapToOrderDTO(order);
+                this.logger.LogInformation("Pedido {orderId} registrado com sucesso para o cliente: {CustomerId}", order.Id, createOrderDTO.CustomerId);         
+
+                return orderDTO;
             }
             catch(Exception ex)
             {

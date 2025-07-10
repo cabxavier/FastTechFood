@@ -15,8 +15,6 @@ namespace FastTechFood.Messaging.Consumers
         public async Task HandleAsync(CreateOrderDTO createOrderDTO)
         {
             var orderDTO = await this.orderService.CreateOrderAsync(createOrderDTO);
-
-            Console.WriteLine($"[PedidoConsumerHandler] Pedido recebido: {orderDTO.Id}");
         }
     }
 }
