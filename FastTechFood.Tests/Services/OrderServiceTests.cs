@@ -65,8 +65,8 @@ namespace FastTechFood.Tests.Services
             Assert.Equal(2, result.Items.Count);
             Assert.Equal(37.48m, result.Total);
 
-            this.VerifyLogMessage($"Iniciando registro de novo pedido para o cliente: {customerId}");
-            this.VerifyLogMessage($"Pedido: {result.Id} registrado com sucesso para o cliente: {customerId}");
+            this.VerifyLogMessage($"Iniciando registro de novo pedido para o clienteId {customerId}");
+            this.VerifyLogMessage($"Pedido registrado com sucesso para o clienteId {customerId}, pedidoId gerado {result.Id}");
         }
 
         [Fact]
@@ -79,8 +79,8 @@ namespace FastTechFood.Tests.Services
 
             await Assert.ThrowsAsync<DomainException>(() => this.orderService.CreateOrderAsync(new CreateOrderDTO(customerId, DeliveryType.Delivery, new List<CreateOrderItemDTO>())));
 
-            this.VerifyLogMessage($"Iniciando registro de novo pedido para o cliente: {customerId}");
-            this.VerifyLogMessage($"Cliente não encontrado: {customerId}", LogLevel.Warning);
+            this.VerifyLogMessage($"Iniciando registro de novo pedido para o clienteId {customerId}");
+            this.VerifyLogMessage($"ClienteId {customerId} não encontrado", LogLevel.Warning);
         }
 
         [Fact]
@@ -94,8 +94,8 @@ namespace FastTechFood.Tests.Services
 
             await Assert.ThrowsAsync<Exception>(() => this.orderService.CreateOrderAsync(new CreateOrderDTO(userId, DeliveryType.Delivery, new List<CreateOrderItemDTO>())));
 
-            this.VerifyLogMessage($"Iniciando registro de novo pedido para o cliente: {userId}");
-            this.VerifyLogMessage($"Apenas clientes podem fazer pedidos: {managerUser.UserType}", LogLevel.Warning);
+            this.VerifyLogMessage($"Iniciando registro de novo pedido para o clienteId {userId}");
+            this.VerifyLogMessage($"Apenas clientes {managerUser.UserType} podem fazer pedidos", LogLevel.Warning);
         }
 
         [Fact]
@@ -112,8 +112,8 @@ namespace FastTechFood.Tests.Services
 
             await Assert.ThrowsAsync<DomainException>(() => this.orderService.CreateOrderAsync(new CreateOrderDTO(customerId, DeliveryType.Delivery, new List<CreateOrderItemDTO> { new CreateOrderItemDTO(productId, 1) })));
 
-            this.VerifyLogMessage($"Iniciando registro de novo pedido para o cliente: {customerId}");
-            this.VerifyLogMessage($"Produto com Id {productId} não encontrado", LogLevel.Warning);
+            this.VerifyLogMessage($"Iniciando registro de novo pedido para o clienteId {customerId}");
+            this.VerifyLogMessage($"ProdutoId {productId} não encontrado", LogLevel.Warning);
         }
 
         [Fact]
@@ -132,8 +132,8 @@ namespace FastTechFood.Tests.Services
 
             await Assert.ThrowsAsync<DomainException>(() => this.orderService.CreateOrderAsync(new CreateOrderDTO(customerId, DeliveryType.Delivery, new List<CreateOrderItemDTO> { new CreateOrderItemDTO(productId, 1) })));
 
-            this.VerifyLogMessage($"Iniciando registro de novo pedido para o cliente: {customerId}");
-            this.VerifyLogMessage($"Produto {product.Name} não está disponível", LogLevel.Warning);
+            this.VerifyLogMessage($"Iniciando registro de novo pedido para o clienteId {customerId}");
+            this.VerifyLogMessage($"ProdutoId {product.Id} não está disponível", LogLevel.Warning);
         }
 
         [Fact]
@@ -161,8 +161,8 @@ namespace FastTechFood.Tests.Services
             await this.orderService.AcceptOrderAsync(orderId);
 
             Assert.Equal(OrderStatus.Accepted, order.OrderStatus);
-            this.VerifyLogMessage($"Iniciando registro de aceite do pedido: {orderId}");
-            this.VerifyLogMessage($"Pedido aceite com sucesso: {orderId}");
+            this.VerifyLogMessage($"Iniciando registro de aceite do pedidoId {orderId}");
+            this.VerifyLogMessage($"Pedido aceite com sucesso pedidoId {orderId}");
         }
 
         [Fact]
@@ -175,8 +175,8 @@ namespace FastTechFood.Tests.Services
 
             await Assert.ThrowsAsync<DomainException>(() => this.orderService.AcceptOrderAsync(orderId));
 
-            this.VerifyLogMessage($"Iniciando registro de aceite do pedido: {orderId}");
-            this.VerifyLogMessage($"Pedido com Id {orderId} não encontrado", LogLevel.Warning);
+            this.VerifyLogMessage($"Iniciando registro de aceite do pedidoId {orderId}");
+            this.VerifyLogMessage($"PedidoId {orderId} não encontrado", LogLevel.Warning);
         }
 
         [Fact]
@@ -194,8 +194,8 @@ namespace FastTechFood.Tests.Services
             await this.orderService.RejectOrderAsync(orderId);
 
             Assert.Equal(OrderStatus.Rejected, order.OrderStatus);
-            this.VerifyLogMessage($"Iniciando registro de rejeição do pedido: {orderId}");
-            this.VerifyLogMessage($"Pedido rejeitado com sucesso: {orderId}");
+            this.VerifyLogMessage($"Iniciando registro de rejeição do pedidoId {orderId}");
+            this.VerifyLogMessage($"PedidoId {orderId} rejeitado com sucesso");
         }
 
         [Fact]
@@ -215,8 +215,8 @@ namespace FastTechFood.Tests.Services
 
             Assert.Equal(OrderStatus.Canceled, order.OrderStatus);
             Assert.Equal(reason, order.CancellationReason);
-            this.VerifyLogMessage($"Iniciando registro de cancelamento do pedido: {orderId}");
-            this.VerifyLogMessage($"Pedido cancelado com sucesso: {orderId}");
+            this.VerifyLogMessage($"Iniciando registro de cancelamento do pedidoId {orderId}");
+            this.VerifyLogMessage($"Pedido cancelado com sucesso pedidoId {orderId}");
         }
 
         private void VerifyLogMessage(string expectedMessage, LogLevel level = LogLevel.Information, Exception exception = null)

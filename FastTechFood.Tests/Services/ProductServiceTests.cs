@@ -39,8 +39,8 @@ namespace FastTechFood.Tests.Services
                 p.ProductType == productDTO.ProductType)),
                 Times.Once);
 
-            this.VerifyLogMessage("Iniciando registro de novo produto: Hambúrguer Artesanal");
-            this.VerifyLogMessage("Produto registrado com sucesso: Hambúrguer Artesanal");
+            this.VerifyLogMessage("Iniciando registro de novo produto Hambúrguer Artesanal");
+            this.VerifyLogMessage("Produto registrado com sucesso Hambúrguer Artesanal");
         }
 
         [Fact]
@@ -55,8 +55,8 @@ namespace FastTechFood.Tests.Services
             await Assert.ThrowsAsync<DomainException>(() =>
                 this.productService.AddProductAsync(new ProductDTO(Guid.NewGuid(), "Hambúrger Artesanal", "Delicioso hambúrguer 200g com queijo", 10.99m, true, ProductType.Sandwich)));
 
-            this.VerifyLogMessage("Iniciando registro de novo produto: Hambúrger Artesanal");
-            this.VerifyLogMessage("Erro ao registrar o produto: Hambúrger Artesanal", LogLevel.Error, exception);
+            this.VerifyLogMessage("Iniciando registro de novo produto Hambúrger Artesanal");
+            this.VerifyLogMessage("Erro ao registrar o produto Hambúrger Artesanal", LogLevel.Error, exception);
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace FastTechFood.Tests.Services
             Assert.Single(result);
             Assert.Equal("Hambúrguer", result.First().Name);
 
-            this.VerifyLogMessage($"Buscando produto por tipo de produto: {ProductType.Sandwich}");
+            this.VerifyLogMessage($"Buscando produto por tipo de produto {ProductType.Sandwich}");
         }
 
         [Fact]
@@ -103,7 +103,7 @@ namespace FastTechFood.Tests.Services
             Assert.Equal(productId, result.Id);
             Assert.Equal("Hambúrguer", result.Name);
 
-            this.VerifyLogMessage($"Buscando produto por Id: {productId}");
+            this.VerifyLogMessage($"Buscando produto por Id {productId}");
         }
 
         [Fact]
@@ -128,8 +128,8 @@ namespace FastTechFood.Tests.Services
                 p.ProductType == productDTO.ProductType)),
                 Times.Once);
 
-            this.VerifyLogMessage($"Atualizando produto: {productId}");
-            this.VerifyLogMessage($"Produto atualizado com sucesso: {productId}");
+            this.VerifyLogMessage($"Atualizando produto {productId}");
+            this.VerifyLogMessage($"Produto atualizado com sucesso {productId}");
         }
 
         [Fact]
@@ -143,7 +143,7 @@ namespace FastTechFood.Tests.Services
             await Assert.ThrowsAsync<DomainException>(() =>
                 this.productService.UpdateProductAsync(productId, new ProductDTO(productId, "Hambúrguer Atualizado", "Nova descrição", 22.50m, true, ProductType.Sandwich)));
 
-            this.VerifyLogMessage($"Produto não encontrado para atualização: {productId}", LogLevel.Warning);
+            this.VerifyLogMessage($"Produto não encontrado para atualização {productId}", LogLevel.Warning);
         }
 
         private void VerifyLogMessage(string expectedMessage, LogLevel level = LogLevel.Information, Exception exception = null)

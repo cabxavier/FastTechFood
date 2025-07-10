@@ -14,7 +14,7 @@ namespace FastTechFood.Messaging.Consumers
 
         public async Task HandleAsync(CreateOrderDTO createOrderDTO)
         {
-            var orderDTO = await this.orderService.CreateOrderAsync(createOrderDTO);
+            await this.orderService.CreateOrderAsync(createOrderDTO);
         }
     }
 }

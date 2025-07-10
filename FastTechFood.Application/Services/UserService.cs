@@ -26,32 +26,32 @@ namespace FastTechFood.Application.Services
 
         public async Task RegisterCustomerAsync(RegisterCustomerDTO registerCustomerDTO)
         {
-            this.logger.LogInformation("Iniciando registro de novo cliente: {Email}", registerCustomerDTO.Email);
+            this.logger.LogInformation("Iniciando registro de novo cliente {Email}", registerCustomerDTO.Email);
 
             if (!this.validationService.ValidateEmail(registerCustomerDTO.Email))
             {
-                this.logger.LogWarning("E-mail inválido: {Email}", registerCustomerDTO.Email);
+                this.logger.LogWarning("E-mail inválido {Email}", registerCustomerDTO.Email);
 
                 throw new DomainException("E-mail inválido");
             }
 
             if (!this.validationService.ValidateCPF(registerCustomerDTO.CPF))
             {
-                this.logger.LogWarning("CPF inválido: {CPF}", registerCustomerDTO.CPF);
+                this.logger.LogWarning("CPF inválido {CPF}", registerCustomerDTO.CPF);
 
                 throw new DomainException("CPF inválido");
             }
 
             if (await this.EmailExistsAsync(registerCustomerDTO.Email))
             {
-                this.logger.LogWarning("Tentativa de registro com e-mail já existente: {Email}", registerCustomerDTO.Email);
+                this.logger.LogWarning("Tentativa de registro com e-mail já existente {Email}", registerCustomerDTO.Email);
 
                 throw new DomainException("E-mail já cadastrado");
             }
 
             if (await this.CpfExistsAsync(registerCustomerDTO.CPF))
             {
-                this.logger.LogWarning("Tentativa de registro com CPF já existente: {CPF}", registerCustomerDTO.CPF);
+                this.logger.LogWarning("Tentativa de registro com CPF já existente {CPF}", registerCustomerDTO.CPF);
 
                 throw new DomainException("CPF já cadastrado");
             }
@@ -67,36 +67,36 @@ namespace FastTechFood.Application.Services
 
                 await this.userRepository.AddAsync(user);
 
-                this.logger.LogInformation("Cliente registrado com sucesso: {UserId}", user.Id);
+                this.logger.LogInformation("Cliente registrado com sucesso {UserId}", user.Id);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao registrar o cliente: {Email}", registerCustomerDTO.Email);
+                this.logger.LogError(ex, "Erro ao registrar o cliente {Email}", registerCustomerDTO.Email);
                 throw new DomainException(ex.Message);
             }
         }
 
         public async Task RegisterEmployeeAsync(RegisterEmployeeDTO registerEmployeeDTO)
         {
-            this.logger.LogInformation("Iniciando registro de novo funcionário: {Email}", registerEmployeeDTO.Email);
+            this.logger.LogInformation("Iniciando registro de novo funcionário {Email}", registerEmployeeDTO.Email);
 
             if (!this.validationService.ValidateEmail(registerEmployeeDTO.Email))
             {
-                this.logger.LogWarning("E-mail inválido: {Email}", registerEmployeeDTO.Email);
+                this.logger.LogWarning("E-mail inválido {Email}", registerEmployeeDTO.Email);
 
                 throw new DomainException("E-mail inválido");
             }
 
             if (!this.validationService.ValidateCPF(registerEmployeeDTO.CPF))
             {
-                this.logger.LogWarning("CPF inválido: {CPF}", registerEmployeeDTO.CPF);
+                this.logger.LogWarning("CPF inválido {CPF}", registerEmployeeDTO.CPF);
 
                 throw new DomainException("CPF inválido");
             }
 
             if (await EmailExistsAsync(registerEmployeeDTO.Email))
             {
-                this.logger.LogWarning("Tentativa de registro de funcionário com e-mail já existente: {Email}", registerEmployeeDTO.Email);
+                this.logger.LogWarning("Tentativa de registro de funcionário com e-mail já existente {Email}", registerEmployeeDTO.Email);
 
                 throw new DomainException("E-mail já cadastrado");
             }
@@ -119,24 +119,24 @@ namespace FastTechFood.Application.Services
 
                 await this.userRepository.AddAsync(user);
 
-                this.logger.LogInformation("Funcionário registrado com sucesso: {UserId}", user.Id);
+                this.logger.LogInformation("Funcionário registrado com sucesso {UserId}", user.Id);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao registrar o funcionário: {Email}", registerEmployeeDTO.Email);
+                this.logger.LogError(ex, "Erro ao registrar o funcionário {Email}", registerEmployeeDTO.Email);
                 throw new DomainException(ex.Message);
             }
         }
 
         public async Task<string> LoginAsync(LoginDTO loginDTO)
         {
-            this.logger.LogInformation("Tentativa de login: {Email}", loginDTO.Email);
+            this.logger.LogInformation("Tentativa de login {Email}", loginDTO.Email);
 
             var user = await this.userRepository.GetByEmailAsync(loginDTO.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.Password))
             {
-                this.logger.LogWarning("Falha na autenticação para o e-mail: {Email}", loginDTO.Email);
+                this.logger.LogWarning("Falha na autenticação para o e-mail {Email}", loginDTO.Email);
 
                 throw new DomainException("Credenciais inválidas");
             }
@@ -145,13 +145,13 @@ namespace FastTechFood.Application.Services
             {
                 var token = this.jwtTokenService.GenerateToken(user);
 
-                this.logger.LogInformation("Login bem-sucedido para o usuário: {UserId}", user.Id);
+                this.logger.LogInformation("Login bem-sucedido para o usuário {UserId}", user.Id);
 
                 return token;
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao gerar token JWT para o usuário: {UserId}", user?.Id);
+                this.logger.LogError(ex, "Erro ao gerar token JWT para o usuário {UserId}", user?.Id);
 
                 throw new DomainException("Erro ao processar o login");
             }
@@ -159,7 +159,7 @@ namespace FastTechFood.Application.Services
 
         public async Task<UserDTO?> GetUserByIdAsync(Guid id)
         {
-            this.logger.LogInformation("Buscando usuário por Id: {UserId}", id);
+            this.logger.LogInformation("Buscando usuário por Id {UserId}", id);
 
             var user = await this.userRepository.GetByIdAsync(id);
 
@@ -182,11 +182,11 @@ namespace FastTechFood.Application.Services
 
         public async Task UpdateUserAsync(User user)
         {
-            this.logger.LogInformation("Atualizando usuário: {UserId}", user.Id);
+            this.logger.LogInformation("Atualizando usuário {UserId}", user.Id);
 
             if ((await this.userRepository.GetByIdAsync(user.Id)) is null)
             {
-                this.logger.LogWarning("Usuário não encontrado para atualização: {UserId}", user.Id);
+                this.logger.LogWarning("Usuário não encontrado para atualização {UserId}", user.Id);
 
                 throw new DomainException("Usuário não encontrado");
             }
@@ -194,11 +194,11 @@ namespace FastTechFood.Application.Services
             {
                 await this.userRepository.UpdateAsync(user);
 
-                this.logger.LogInformation("Usuário atualizado com sucesso: {UserId}", user.Id);
+                this.logger.LogInformation("Usuário atualizado com sucesso {UserId}", user.Id);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao atualizar o usuário: {UserId}", user.Id);
+                this.logger.LogError(ex, "Erro ao atualizar o usuário {UserId}", user.Id);
 
                 throw new DomainException(ex.Message);
             }
@@ -210,20 +210,20 @@ namespace FastTechFood.Application.Services
 
         public async Task ChangePasswordAsync(Guid userId, string currentPassword, string newPassword)
         {
-            this.logger.LogInformation("Alteração de senha solicitada para o usuário: {UserId}", userId);
+            this.logger.LogInformation("Alteração de senha solicitada para o usuário {UserId}", userId);
 
             var user = await this.userRepository.GetByIdAsync(userId);
 
             if (user == null)
             {
-                this.logger.LogWarning("Usuário não encontrado para alteração de senha: {UserId}", userId);
+                this.logger.LogWarning("Usuário não encontrado para alteração de senha {UserId}", userId);
 
                 throw new DomainException("Usuário não encontrado");
             }
 
             if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.Password))
             {
-                this.logger.LogWarning("Senha atual incorreta para o usuário: {UserId}", userId);
+                this.logger.LogWarning("Senha atual incorreta para o usuário {UserId}", userId);
 
                 throw new DomainException("Senha atual incorreta");
             }
@@ -232,7 +232,7 @@ namespace FastTechFood.Application.Services
 
             await this.userRepository.UpdateAsync(user);
 
-            this.logger.LogInformation("Senha alterada com sucesso para o usuário: {UserId}", userId);
+            this.logger.LogInformation("Senha alterada com sucesso para o usuário {UserId}", userId);
         }
     }
 }

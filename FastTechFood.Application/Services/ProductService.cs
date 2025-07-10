@@ -21,7 +21,7 @@ namespace FastTechFood.Application.Services
 
         public async Task AddProductAsync(ProductDTO produtoDTO)
         {
-            this.logger.LogInformation("Iniciando registro de novo produto: {Name}", produtoDTO.Name);
+            this.logger.LogInformation("Iniciando registro de novo produto {Name}", produtoDTO.Name);
 
             try
             {
@@ -34,11 +34,11 @@ namespace FastTechFood.Application.Services
 
                 await this.productRepository.AddAsync(product);
 
-                this.logger.LogInformation("Produto registrado com sucesso: {Name}", product.Name);
+                this.logger.LogInformation("Produto registrado com sucesso {Name}", product.Name);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao registrar o produto: {Name}", produtoDTO.Name);
+                this.logger.LogError(ex, "Erro ao registrar o produto {Name}", produtoDTO.Name);
 
                 throw new DomainException(ex.Message);
             }
@@ -61,7 +61,7 @@ namespace FastTechFood.Application.Services
 
         public async Task<IEnumerable<ProductDTO?>> GetProductsByTypeAsync(ProductType productType)
         {
-            this.logger.LogInformation("Buscando produto por tipo de produto: {ProductType}", productType);
+            this.logger.LogInformation("Buscando produto por tipo de produto {ProductType}", productType);
 
             return (await this.productRepository.GetByTypeAsync(productType)).Select(p => new ProductDTO
             (
@@ -76,7 +76,7 @@ namespace FastTechFood.Application.Services
 
         public async Task<ProductDTO?> GetProductByIdAsync(Guid id)
         {
-            this.logger.LogInformation("Buscando produto por Id: {Id}", id);
+            this.logger.LogInformation("Buscando produto por Id {Id}", id);
 
             var product = await this.productRepository.GetByIdAsync(id);
 
@@ -95,13 +95,13 @@ namespace FastTechFood.Application.Services
 
         public async Task UpdateProductAsync(Guid id, ProductDTO productDTO)
         {
-            this.logger.LogInformation("Atualizando produto: {Id}", id);
+            this.logger.LogInformation("Atualizando produto {Id}", id);
 
             var product = await this.productRepository.GetByIdAsync(id);
 
             if (product is null)
             {
-                this.logger.LogWarning("Produto não encontrado para atualização: {Id}", id);
+                this.logger.LogWarning("Produto não encontrado para atualização {Id}", id);
 
                 throw new DomainException("Produto não encontrado");
             }
@@ -117,11 +117,11 @@ namespace FastTechFood.Application.Services
 
                 await this.productRepository.UpdateAsync(product);
 
-                this.logger.LogInformation("Produto atualizado com sucesso: {Id}", id);
+                this.logger.LogInformation("Produto atualizado com sucesso {Id}", id);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Erro ao atualizar o produto: {Id}", id);
+                this.logger.LogError(ex, "Erro ao atualizar o produto {Id}", id);
 
                 throw new DomainException(ex.Message);
             }
