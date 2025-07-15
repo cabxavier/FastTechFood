@@ -90,7 +90,7 @@ docker-compose up --build
 ---
 ## 🔗 Endpoints dos Serviços
 - **API:** [http://localhost:5000](http://localhost:5000)
-- **Gateway:** [http://localhost:8000](http://localhost:8000)
+- **Gateway:** [http://localhost:5001](http://localhost:5001)
 - **MongoDB:** `mongodb://localhost:27017`
 - **RabbitMQ UI:** [http://localhost:15672](http://localhost:15672)
 - **Zabbix UI:** [http://localhost:8080](http://localhost:8080)
