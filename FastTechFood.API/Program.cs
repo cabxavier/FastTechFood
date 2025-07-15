@@ -85,8 +85,6 @@ builder.Services.AddHostedService(sp =>
         queueName: builder.Configuration.GetSection("RabbitMQ")["QueueCreateOrder"] ?? string.Empty
     ));
 
-//builder.Services.AddSingleton<RabbitMQPublisherService>();
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
