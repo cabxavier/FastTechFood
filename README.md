@@ -57,7 +57,7 @@ FastTechFood/
     - prometheus-pvc.yaml
   - namespace.yaml
 ---
-## ☸️ Deploy no Kubernetes (Minikube, Docker Desktop, etc.)
+## ☸️ Deploy no Kubernetes (Minikube, Docker Desktop)
 ```bash
 # 1. Primeiro crie o namespace
 kubectl apply -f k8s/namespace.yaml
@@ -88,13 +88,23 @@ cd fasttechfood
 docker-compose up --build
 ````
 ---
-## 🔗 Endpoints dos Serviços
+## 🔗 Endpoints dos Serviços (Docker Desktop)
 - **API:** [http://localhost:5000](http://localhost:5000)
 - **Gateway:** [http://localhost:5001](http://localhost:5001)
 - **MongoDB:** `mongodb://localhost:27017`
 - **RabbitMQ UI:** [http://localhost:15672](http://localhost:15672)
 - **Zabbix UI:** [http://localhost:8080](http://localhost:8080)
+- **Prometheus:** [http://localhost:9090](http://localhost:9090)
 - **Grafana:** [http://localhost:3000](http://localhost:3000)
+---
+## 🔗 Endpoints dos Serviços (Kubernetes)
+- **API:** [http://localhost:30416](http://localhost:30416)
+- **Gateway:** [http://localhost:30165](http://localhost:30165)
+- **MongoDB:** `mongodb://localhost:30722`
+- **RabbitMQ UI:** [http://localhost:31672](http://localhost:31672)
+- **Zabbix UI:** [http://localhost:30080](http://localhost:30080)
+- **Prometheus:** [http://localhost:30090](http://localhost:30090)
+- **Grafana:** [http://localhost:30300](http://localhost:30300)
 ---
 ## 📮 Comunicação entre Microsserviços
 O projeto utiliza **RabbitMQ** para troca de mensagens assíncronas entre os microsserviços. Um exemplo de fluxo:
