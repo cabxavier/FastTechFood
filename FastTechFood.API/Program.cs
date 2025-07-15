@@ -69,14 +69,17 @@ var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
 
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 
+// Serviços
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IValidationService, ValidationService>();
 builder.Services.AddSingleton<IRabbitMQPublisherService, RabbitMQPublisherService>();
 
+// Consumidores
 builder.Services.AddScoped<IConsumer<CreateOrderDTO>, PedidoConsumerHandler>();
 
+// RabbitMQ
 builder.Services.AddHostedService(sp =>
     new RabbitMQConsumerService<CreateOrderDTO>(
         sp.GetRequiredService<IConfiguration>(),
@@ -85,6 +88,7 @@ builder.Services.AddHostedService(sp =>
         queueName: builder.Configuration.GetSection("RabbitMQ")["QueueCreateOrder"] ?? string.Empty
     ));
 
+// Autenticação
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
