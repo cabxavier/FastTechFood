@@ -78,6 +78,15 @@ kubectl apply -f k8s/services/
 kubectl get all,pvc -n fasttechfood
 ```
 ---
+## 🔗 Endpoints dos Serviços (Kubernetes)
+- **API:** [http://localhost:30416](http://localhost:30416)
+- **Gateway:** [http://localhost:30165](http://localhost:30165)
+- **MongoDB:** `mongodb://localhost:30722`
+- **RabbitMQ UI:** [http://localhost:31672](http://localhost:31672)
+- **Zabbix UI:** [http://localhost:30080](http://localhost:30080)
+- **Prometheus:** [http://localhost:30090](http://localhost:30090)
+- **Grafana:** [http://localhost:30300](http://localhost:30300)
+---
 ## ▶️ Como Executar o Projeto (Local)
 ```bash
 1. Clone o repositório:
@@ -96,15 +105,6 @@ docker-compose up --build
 - **Zabbix UI:** [http://localhost:8080](http://localhost:8080)
 - **Prometheus:** [http://localhost:9090](http://localhost:9090)
 - **Grafana:** [http://localhost:3000](http://localhost:3000)
----
-## 🔗 Endpoints dos Serviços (Kubernetes)
-- **API:** [http://localhost:30416](http://localhost:30416)
-- **Gateway:** [http://localhost:30165](http://localhost:30165)
-- **MongoDB:** `mongodb://localhost:30722`
-- **RabbitMQ UI:** [http://localhost:31672](http://localhost:31672)
-- **Zabbix UI:** [http://localhost:30080](http://localhost:30080)
-- **Prometheus:** [http://localhost:30090](http://localhost:30090)
-- **Grafana:** [http://localhost:30300](http://localhost:30300)
 ---
 ## 📮 Comunicação entre Microsserviços
 O projeto utiliza **RabbitMQ** para troca de mensagens assíncronas entre os microsserviços. Um exemplo de fluxo:
