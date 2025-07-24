@@ -2,7 +2,7 @@
 {
     public enum UserType { Customer, Employee, KitchenStaff, Manager }
 
-    public enum ProductType { Sandwich, Dessert, Drink, Combok, Food }
+    public enum ProductType { Sandwich, Dessert, Drink, Combo, Food }
 
     public enum OrderStatus { Pending, Accepted, Rejected, Canceled, InPreparation, Ready, Delivered }
 
