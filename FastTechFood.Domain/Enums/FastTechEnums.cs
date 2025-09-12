@@ -6,6 +6,5 @@
 
     public enum OrderStatus { Pending, Accepted, Rejected, Canceled, InPreparation, Ready, Delivered }
 
-    public enum DeliveryType { Counter, DriveThru, Delivery }
-	
+    public enum DeliveryType { Counter, DriveThru, Delivery }	
 }
